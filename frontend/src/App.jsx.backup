@@ -1,0 +1,315 @@
+import { useEffect, useState } from "react";
+import "./App.css";
+import BusinessDashboard from "./pages/BusinessDashboard";
+import AuthPage from "./pages/AuthPage";
+
+const API = "http://localhost:5000/api";
+
+const localProducts = [
+  {
+    id: "sneaker-1",
+    name: "Urban Classic Sneaker",
+    price: 34999,
+    category: "Sneakers",
+    image: "/products/sneakers-1.png",
+    store: "AXIOM Test Store",
+  },
+  {
+    id: "sneaker-2",
+    name: "Street Flex Sneaker",
+    price: 28500,
+    category: "Sneakers",
+    image: "/products/sneakers-2.png",
+    store: "AXIOM Test Store",
+  },
+  {
+    id: "sneaker-3",
+    name: "Everyday Runner",
+    price: 17998,
+    category: "Sneakers",
+    image: "/products/sneakers-3.png",
+    store: "AXIOM Test Store",
+  },
+  {
+    id: "sneaker-4",
+    name: "Essential Casual Sneaker",
+    price: 7199,
+    category: "Sneakers",
+    image: "/products/sneakers-4.png",
+    store: "AXIOM Test Store",
+  },
+];
+
+function formatPrice(price) {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
+function Market() {
+  const [products, setProducts] = useState(localProducts);
+  const [cartCount, setCartCount] = useState(0);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await fetch(`${API}/products`);
+        const data = await response.json();
+
+        if (data.success && data.products?.length) {
+          const backendProducts = data.products.map((product, index) => ({
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            category: product.category,
+            image: product.images?.[0]
+              ? `${API.replace("/api", "")}${product.images[0]}`
+              : "",
+            store: product.business?.name || "AXIOM Store",
+          }));
+
+          setProducts(backendProducts);
+        }
+      } catch (error) {
+        console.log("Using local product showcase:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const filteredProducts = products.filter((product) =>
+    `${product.name} ${product.category} ${product.store}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+  const addToCart = () => {
+    setCartCount((count) => count + 1);
+  };
+
+  return (
+    <div className="app">
+      <nav className="navbar">
+        <div className="brand">
+          <span className="brand-mark">A</span>
+          <span>AXIOM</span>
+        </div>
+
+        <div className="nav-links">
+          <a href="#shop">Shop</a>
+          <a href="#categories">Categories</a>
+          <a href="#discover">Discover</a>
+          <a href="/business">Business</a>
+        </div>
+
+        <div className="nav-actions">
+          <a href="/login" className="nav-login">Sign in</a>
+          <a href="/register" className="nav-sell">Sell on AXIOM</a>
+
+          <button className="cart-button">
+            🛒 Cart
+            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+          </button>
+        </div>
+      </nav>
+
+      <main>
+        <section className="hero">
+          <div className="hero-content">
+            <p className="eyebrow">THE NEW WAY TO SHOP</p>
+
+            <h1>
+              Discover what
+              <br />
+              <span>you'll love.</span>
+            </h1>
+
+            <p className="hero-text">
+              Discover products from businesses and sellers across Nigeria.
+              Shop smarter. Find better. Buy with AXIOM.
+            </p>
+
+            <div className="hero-actions">
+              <a href="#shop" className="primary-button">
+                Start shopping
+              </a>
+
+              <a href="/business" className="secondary-button">
+                Sell on AXIOM →
+              </a>
+            </div>
+          </div>
+
+          <div className="hero-card">
+            <div className="hero-card-top">
+              <span>FEATURED</span>
+              <span>01 / 04</span>
+            </div>
+
+            <img
+              src="/products/sneakers-1.png"
+              alt="Featured sneaker"
+            />
+
+            <div className="hero-product-info">
+              <div>
+                <small>AXIOM TEST STORE</small>
+                <h3>Urban Classic Sneaker</h3>
+              </div>
+
+              <strong>₦34,999</strong>
+            </div>
+          </div>
+        </section>
+
+        <section className="category-section" id="categories">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">EXPLORE</p>
+              <h2>Shop by category</h2>
+            </div>
+          </div>
+
+          <div className="categories">
+            <button>👟 Sneakers</button>
+            <button>👕 Fashion</button>
+            <button>👜 Bags</button>
+            <button>💄 Beauty</button>
+            <button>📱 Gadgets</button>
+            <button>🏠 Home</button>
+          </div>
+        </section>
+
+        <section className="products-section" id="shop">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">MARKETPLACE</p>
+              <h2>Trending products</h2>
+            </div>
+
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </div>
+          </div>
+
+          {loading && (
+            <p className="loading-text">Loading marketplace...</p>
+          )}
+
+          <div className="product-grid">
+            {filteredProducts.map((product) => (
+              <article className="product-card" key={product.id}>
+                <div className="product-image">
+                  <span className="product-category">
+                    {product.category}
+                  </span>
+
+                  <button
+                    className="quick-add"
+                    onClick={addToCart}
+                    aria-label={`Add ${product.name} to cart`}
+                  >
+                    +
+                  </button>
+
+                  {product.image ? (
+                    <img src={product.image} alt={product.name} />
+                  ) : (
+                    <div className="product-no-image">
+                      <span>AXIOM</span>
+                      <small>No image available</small>
+                    </div>
+                  )}
+                </div>
+
+                <div className="product-details">
+                  <p>{product.store}</p>
+
+                  <h3>{product.name}</h3>
+
+                  <div className="product-bottom">
+                    <strong>{formatPrice(product.price)}</strong>
+
+                    <button onClick={addToCart}>Add to cart</button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {!loading && filteredProducts.length === 0 && (
+            <div className="empty-state">
+              <h3>No products found</h3>
+              <p>Try another search.</p>
+            </div>
+          )}
+        </section>
+
+        <section className="business-banner" id="business">
+          <div>
+            <p className="eyebrow">FOR BUSINESSES</p>
+            <h2>Turn your business into an online store.</h2>
+            <p>
+              Create your AXIOM store, add products and start reaching
+              customers online.
+            </p>
+          </div>
+
+          <a href="/business" className="dashboard-primary">
+            Create a store →
+          </a>
+        </section>
+
+        <section className="discover-section" id="discover">
+          <div>
+            <p className="eyebrow">COMING NEXT</p>
+            <h2>AXIOM Discover</h2>
+            <p>
+              A social shopping experience where products become content
+              and discovery becomes part of shopping.
+            </p>
+          </div>
+
+          <span>SOON</span>
+        </section>
+      </main>
+
+      <footer>
+        <div className="brand">
+          <span className="brand-mark">A</span>
+          <span>AXIOM</span>
+        </div>
+
+        <p>Discover. Shop. Grow.</p>
+      </footer>
+    </div>
+  );
+}
+
+function App() {
+  const path = window.location.pathname;
+
+  if (path === "/business") {
+    return <BusinessDashboard />;
+  }
+
+  if (path === "/login" || path === "/register") {
+    return <AuthPage />;
+  }
+
+  return <Market />;
+}
+
+export default App;
