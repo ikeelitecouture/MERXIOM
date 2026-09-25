@@ -9,4 +9,4 @@ Disallow: /account
 Disallow: /business
 Disallow: /admin
 
-Sitemap: https://YOUR-MERXIOM-DOMAIN/sitemap.xml
+Sitemap: https://merxiom.netlify.app/sitemap.xml
