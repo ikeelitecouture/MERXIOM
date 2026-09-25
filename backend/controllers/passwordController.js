@@ -25,7 +25,7 @@ const forgotPassword = async (req, res) => {
       return res.json({
         success: true,
         message:
-          "If an AXIOM account exists with that email, a password reset link will be sent."
+          "If an MERXIOM account exists with that email, a password reset link will be sent."
       });
     }
 
@@ -53,7 +53,7 @@ const forgotPassword = async (req, res) => {
     res.json({
       success: true,
       message:
-        "If an AXIOM account exists with that email, a password reset link will be sent."
+        "If an MERXIOM account exists with that email, a password reset link will be sent."
     });
   } catch (error) {
     console.error(

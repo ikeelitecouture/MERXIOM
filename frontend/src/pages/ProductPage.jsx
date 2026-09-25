@@ -26,7 +26,7 @@ function ProductPage({ product, onBack, onAddToCart }) {
           </div>
 
           <p className="product-page-description">
-            Discover this product on AXIOM. Shop directly from the
+            Discover this product on MERXIOM. Shop directly from the
             seller and enjoy a simple, modern shopping experience.
           </p>
 

@@ -42,7 +42,7 @@ const register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "AXIOM account created",
+      message: "MERXIOM account created",
       token,
       user: {
         id: user._id,

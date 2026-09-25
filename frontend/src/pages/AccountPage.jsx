@@ -5,7 +5,7 @@ const API = import.meta.env.VITE_API_URL;
 
 function getUser() {
   try {
-    const saved = localStorage.getItem("axiom_user");
+    const saved = localStorage.getItem("merxiom_user");
     return saved ? JSON.parse(saved) : null;
   } catch {
     return null;
@@ -38,7 +38,7 @@ export default function AccountPage() {
 
   useEffect(() => {
     const loadOrders = async () => {
-      const token = localStorage.getItem("axiom_token");
+      const token = localStorage.getItem("merxiom_token");
 
       if (!token) {
         setLoadingOrders(false);
@@ -78,7 +78,7 @@ export default function AccountPage() {
 
   const roleLabel =
     user.role === "admin"
-      ? "AXIOM Owner"
+      ? "MERXIOM Owner"
       : user.role === "seller"
       ? "Seller"
       : "Customer";
@@ -98,8 +98,8 @@ export default function AccountPage() {
       : "Continue Shopping →";
 
   const logout = () => {
-    localStorage.removeItem("axiom_token");
-    localStorage.removeItem("axiom_user");
+    localStorage.removeItem("merxiom_token");
+    localStorage.removeItem("merxiom_user");
     window.location.href = "/";
   };
 
@@ -111,7 +111,7 @@ export default function AccountPage() {
           {(user.name || "A").charAt(0).toUpperCase()}
         </div>
 
-        <p className="eyebrow">MY AXIOM ACCOUNT</p>
+        <p className="eyebrow">MY MERXIOM ACCOUNT</p>
 
         <h1>{user.name}</h1>
 
@@ -153,7 +153,7 @@ export default function AccountPage() {
 
             <div className="account-orders-heading">
               <div>
-                <p className="eyebrow">MY AXIOM ORDERS</p>
+                <p className="eyebrow">MY MERXIOM ORDERS</p>
                 <h2>Orders & Delivery</h2>
               </div>
 
@@ -180,7 +180,7 @@ export default function AccountPage() {
                 <div className="account-orders-empty">
                   <strong>No orders yet.</strong>
                   <span>
-                    Your AXIOM purchases will appear here.
+                    Your MERXIOM purchases will appear here.
                   </span>
                 </div>
               )}
@@ -235,7 +235,7 @@ export default function AccountPage() {
                                 />
                               ) : (
                                 <div className="account-order-product-placeholder">
-                                  AXIOM
+                                  MERXIOM
                                 </div>
                               )}
 

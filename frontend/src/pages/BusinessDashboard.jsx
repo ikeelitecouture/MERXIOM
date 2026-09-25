@@ -39,7 +39,7 @@ function BusinessDashboard() {
     images: [],
   });
 
-  const token = localStorage.getItem("axiom_token");
+  const token = localStorage.getItem("merxiom_token");
 
   const menu = [
     "Overview",
@@ -60,7 +60,7 @@ function BusinessDashboard() {
       setUpdatingOrder(orderId);
       setOrdersError("");
 
-      const token = localStorage.getItem("axiom_token");
+      const token = localStorage.getItem("merxiom_token");
 
       const response = await fetch(
         `${API}/orders/${orderId}/status`,
@@ -101,7 +101,7 @@ function BusinessDashboard() {
 
   const loadDashboard = async () => {
     if (!token) {
-      setMessage("Please log in to your AXIOM business account.");
+      setMessage("Please log in to your MERXIOM business account.");
       setLoading(false);
       return;
     }
@@ -123,7 +123,7 @@ function BusinessDashboard() {
       const currentBusiness = businessData.businesses?.[0];
 
       if (!currentBusiness) {
-        setMessage("You don't have an AXIOM store yet.");
+        setMessage("You don't have an MERXIOM store yet.");
         setLoading(false);
         return;
       }
@@ -390,9 +390,9 @@ function BusinessDashboard() {
       <div className="business-dashboard">
         <main className="dashboard-main">
           <div className="dashboard-placeholder">
-            <p className="eyebrow">AXIOM BUSINESS</p>
+            <p className="eyebrow">MERXIOM BUSINESS</p>
             <h2>Loading your store...</h2>
-            <p>Connecting to your AXIOM account.</p>
+            <p>Connecting to your MERXIOM account.</p>
           </div>
         </main>
       </div>
@@ -404,10 +404,10 @@ function BusinessDashboard() {
       <div className="business-dashboard">
         <main className="dashboard-main">
           <div className="dashboard-placeholder">
-            <p className="eyebrow">AXIOM BUSINESS</p>
+            <p className="eyebrow">MERXIOM BUSINESS</p>
             <h2>{message || "Business account required"}</h2>
             <p>
-              Log in to your AXIOM seller account to access your dashboard.
+              Log in to your MERXIOM seller account to access your dashboard.
             </p>
           </div>
         </main>
@@ -420,7 +420,7 @@ function BusinessDashboard() {
       <aside className="dashboard-sidebar">
         <div className="dashboard-brand">
           <span className="brand-mark">A</span>
-          <span>AXIOM</span>
+          <span>MERXIOM</span>
         </div>
 
         <a
@@ -481,14 +481,14 @@ function BusinessDashboard() {
             <section className="welcome-card">
               <div>
                 <p className="eyebrow">
-                  WELCOME TO AXIOM BUSINESS
+                  WELCOME TO MERXIOM BUSINESS
                 </p>
 
                 <h2>Grow your business from one place.</h2>
 
                 <p>
                   Manage your products, orders and customers while
-                  reaching more people through AXIOM Market.
+                  reaching more people through MERXIOM Market.
                 </p>
               </div>
 
@@ -510,7 +510,7 @@ function BusinessDashboard() {
               <article className="stat-card">
                 <span>ACTIVE</span>
                 <strong>{activeProducts.length}</strong>
-                <small>Products live on AXIOM</small>
+                <small>Products live on MERXIOM</small>
               </article>
 
               <article className="stat-card">
@@ -545,7 +545,7 @@ function BusinessDashboard() {
                 <div className="empty-dashboard">
                   <div className="empty-icon">A</div>
 
-                  <h3>Your AXIOM store is ready.</h3>
+                  <h3>Your MERXIOM store is ready.</h3>
 
                   <p>
                     Add your first product and start building your
@@ -603,7 +603,7 @@ function BusinessDashboard() {
                 <h3>No products yet.</h3>
 
                 <p>
-                  Add products to start selling through AXIOM Market.
+                  Add products to start selling through MERXIOM Market.
                 </p>
 
                 <button
@@ -673,7 +673,7 @@ function BusinessDashboard() {
                 <p className="eyebrow">SELLER ORDERS</p>
                 <h2>Customer orders</h2>
                 <p>
-                  Manage orders placed for products in your AXIOM store.
+                  Manage orders placed for products in your MERXIOM store.
                 </p>
               </div>
 
@@ -685,7 +685,7 @@ function BusinessDashboard() {
             {ordersLoading && (
               <div className="empty-dashboard">
                 <h3>Loading orders...</h3>
-                <p>Checking your latest AXIOM orders.</p>
+                <p>Checking your latest MERXIOM orders.</p>
               </div>
             )}
 
@@ -1190,7 +1190,7 @@ function BusinessDashboard() {
 
               <label>
                 Status
-                <div className="axiom-status-options">
+                <div className="merxiom-status-options">
                   {[
                     ["active", "Active"],
                     ["draft", "Draft"],
@@ -1199,7 +1199,7 @@ function BusinessDashboard() {
                     <button
                       key={value}
                       type="button"
-                      className={`axiom-status-option ${
+                      className={`merxiom-status-option ${
                         form.status === value ? "selected" : ""
                       }`}
                       onClick={() =>
@@ -1209,10 +1209,10 @@ function BusinessDashboard() {
                         }))
                       }
                     >
-                      <span className="axiom-status-dot" />
+                      <span className="merxiom-status-dot" />
                       <span>{label}</span>
                       {form.status === value && (
-                        <span className="axiom-status-check">✓</span>
+                        <span className="merxiom-status-check">✓</span>
                       )}
                     </button>
                   ))}

@@ -8,18 +8,18 @@ const sendPasswordResetEmail = async ({
   token
 }) => {
   const resetUrl =
-    `${process.env.AXIOM_FRONTEND_URL}/reset-password?token=${encodeURIComponent(token)}`;
+    `${process.env.MERXIOM_FRONTEND_URL}/reset-password?token=${encodeURIComponent(token)}`;
 
   return resend.emails.send({
-    from: "AXIOM <onboarding@resend.dev>",
+    from: "MERXIOM <onboarding@resend.dev>",
     to: email,
-    subject: "Reset your AXIOM password",
+    subject: "Reset your MERXIOM password",
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:30px">
-        <h1 style="color:#111">AXIOM</h1>
+        <h1 style="color:#111">MERXIOM</h1>
         <h2>Reset your password</h2>
         <p>Hello ${name || "there"},</p>
-        <p>We received a request to reset your AXIOM password.</p>
+        <p>We received a request to reset your MERXIOM password.</p>
         <p>
           <a href="${resetUrl}"
              style="display:inline-block;padding:14px 22px;background:#111;color:#fff;text-decoration:none;border-radius:6px">

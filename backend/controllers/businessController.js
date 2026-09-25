@@ -30,7 +30,7 @@ const createBusiness = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "AXIOM store created",
+      message: "MERXIOM store created",
       business
     });
   } catch (error) {

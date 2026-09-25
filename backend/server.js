@@ -30,7 +30,7 @@ app.use("/api/payments", paymentRoutes);
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "AXIOM API is online 🚀",
+    message: "MERXIOM API is online 🚀",
     version: "1.0.0"
   });
 });
@@ -39,7 +39,7 @@ app.get("/api/health", (req, res) => {
   res.json({
     success: true,
     status: "healthy",
-    service: "AXIOM Backend"
+    service: "MERXIOM Backend"
   });
 });
 
@@ -47,7 +47,7 @@ const startServer = async () => {
   await connectDB();
 
   app.listen(PORT, () => {
-    console.log(`AXIOM Backend running on port ${PORT}`);
+    console.log(`MERXIOM Backend running on port ${PORT}`);
   });
 };
 

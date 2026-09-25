@@ -80,7 +80,7 @@ export default function ResetPassword() {
 
         <div className="auth-brand">
           <span className="brand-mark">A</span>
-          <span>AXIOM</span>
+          <span>MERXIOM</span>
         </div>
 
         <p className="eyebrow">
@@ -90,7 +90,7 @@ export default function ResetPassword() {
         <h1>Set a new password.</h1>
 
         <p className="auth-intro">
-          Choose a new password for your AXIOM
+          Choose a new password for your MERXIOM
           account.
         </p>
 

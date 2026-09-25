@@ -6,7 +6,7 @@ const createOrder = async (req, res) => {
   try {
     const { items, delivery, deliveryFee, courier } = req.body;
 
-    console.log("AXIOM ORDER COURIER DEBUG:", {
+    console.log("MERXIOM ORDER COURIER DEBUG:", {
       name: courier?.name,
       serviceCode: courier?.serviceCode,
       courierId: courier?.courierId,
@@ -120,7 +120,7 @@ const createOrder = async (req, res) => {
     const total = subtotal + shippingFee;
 
     const orderReference =
-      `AXIOM-${Date.now()}-${Math.random()
+      `MERXIOM-${Date.now()}-${Math.random()
         .toString(36)
         .slice(2, 8)
         .toUpperCase()}`;

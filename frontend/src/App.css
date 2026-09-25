@@ -389,19 +389,20 @@ img {
 }
 
 .market-product-image {
-  position: relative;
-  aspect-ratio: .86;
-
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  background: #eceae5;
+  background: #f7f7f7;
 }
 
 .market-product-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-
-  transition: transform .35s ease;
+  object-fit: contain;
+  object-position: center;
+  display: block;
 }
 
 .market-product-card:hover .market-product-image img {
@@ -1532,7 +1533,7 @@ img {
 }
 
 /* =========================
-   AXIOM AUTH / LOGIN
+   MERXIOM AUTH / LOGIN
    ========================= */
 
 .auth-page {
@@ -2338,13 +2339,13 @@ img {
   cursor: pointer;
 }
 
-.axiom-status-options {
+.merxiom-status-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 
-.axiom-status-option {
+.merxiom-status-option {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2358,20 +2359,20 @@ img {
   cursor: pointer;
 }
 
-.axiom-status-option.selected {
+.merxiom-status-option.selected {
   border-color: #111;
   background: #111;
   color: #fff;
 }
 
-.axiom-status-dot {
+.merxiom-status-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: currentColor;
 }
 
-.axiom-status-check {
+.merxiom-status-check {
   margin-left: auto;
 }
 
@@ -2497,7 +2498,7 @@ img {
     grid-template-columns: 1fr;
   }
 
-  .axiom-status-options {
+  .merxiom-status-options {
     grid-template-columns: 1fr;
   }
 
@@ -2549,7 +2550,7 @@ img {
 }
 
 
-/* AXIOM SHIPPING SETTINGS */
+/* MERXIOM SHIPPING SETTINGS */
 .shipping-settings-card {
   margin-top: 28px;
   padding: 28px;
@@ -2630,7 +2631,7 @@ img {
 
 
 /* =========================
-   AXIOM OWNER DASHBOARD
+   MERXIOM OWNER DASHBOARD
    ========================= */
 
 .admin-page {
@@ -2813,7 +2814,7 @@ img {
 }
 
 /* ================================
-   AXIOM ACCOUNT
+   MERXIOM ACCOUNT
 ================================ */
 
 .account-page {
@@ -3239,7 +3240,7 @@ img {
 }
 
 /* ================================
-   AXIOM SELLER ORDERS
+   MERXIOM SELLER ORDERS
 ================================ */
 
 .seller-orders-list {
@@ -3462,5 +3463,105 @@ img {
     width: 100%;
     text-align: center;
   }
+}
+
+
+/* ================================
+   MERXIOM HELP CENTER
+================================ */
+
+.help-page {
+  min-height: 100vh;
+  padding: 90px 20px;
+  background: #f7f7f5;
+  color: #111;
+}
+
+.help-hero {
+  max-width: 850px;
+  margin: 0 auto 55px;
+  text-align: center;
+}
+
+.help-eyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #777;
+}
+
+.help-hero h1 {
+  margin: 0 0 16px;
+  font-size: clamp(38px, 7vw, 68px);
+  line-height: 1;
+  color: #111;
+}
+
+.help-hero p:last-child {
+  max-width: 650px;
+  margin: 0 auto;
+  font-size: 17px;
+  line-height: 1.7;
+  color: #555;
+}
+
+.help-faq {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+
+.help-item {
+  padding: 25px 28px;
+  background: #fff;
+  border: 1px solid #e5e5e2;
+  border-radius: 14px;
+}
+
+.help-item h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #111;
+}
+
+.help-item p {
+  margin: 0;
+  color: #555;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .help-page {
+    padding: 60px 16px;
+  }
+
+  .help-item {
+    padding: 21px;
+  }
+}
+
+/* Account readability */
+.account-page,
+.account-page * {
+  color: #111;
+}
+
+.account-role,
+.account-details span {
+  color: #666;
+}
+
+.account-details strong {
+  color: #111;
+}
+
+.account-actions a {
+  color: #fff;
+}
+
+.account-logout {
+  color: #b42318;
 }
 

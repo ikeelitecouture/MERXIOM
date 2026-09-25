@@ -48,7 +48,7 @@ const initializePayment = async (req, res) => {
       });
     }
 
-    const reference = `AXIOM-${order._id}-${Date.now()}`;
+    const reference = `MERXIOM-${order._id}-${Date.now()}`;
 
     const result = await initializeTransaction({
       email: user.email,

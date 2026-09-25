@@ -6,9 +6,10 @@ import AuthPage from "./pages/AuthPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AccountPage from "./pages/AccountPage";
+import HelpPage from "./pages/HelpPage";
 
 const API = import.meta.env.VITE_API_URL;
-const CART_KEY = "axiom_cart";
+const CART_KEY = "merxiom_cart";
 
 const TEMP_SENDER_ADDRESS_CODE = 160022252;
 const SHIPBUBBLE_CATEGORY_ID = 74794423;
@@ -52,7 +53,7 @@ function addItemToCart(product, quantity = 1) {
       price: Number(product.price),
       category: product.category,
       image: product.image || "",
-      store: product.store || "AXIOM Store",
+      store: product.store || "MERXIOM Store",
       businessId:
         product.business?._id ||
         product.business?.id ||
@@ -80,7 +81,7 @@ function getTomorrowDate() {
 
 function getUserFromStorage() {
   try {
-    const saved = localStorage.getItem("axiom_user");
+    const saved = localStorage.getItem("merxiom_user");
     return saved ? JSON.parse(saved) : null;
   } catch {
     return null;
@@ -93,7 +94,7 @@ function Header({ cartCount = 0 }) {
   return (
     <header className="site-header">
       <a href="/" className="brand">
-        AXIOM
+        MERXIOM
       </a>
 
       <nav className="main-nav">
@@ -111,15 +112,19 @@ function Header({ cartCount = 0 }) {
           )}
         </a>
 
-        {user ? (
-          <a href="/account" className="nav-login">
-            {user.name || "Account"}
+          <a href="/help" className="nav-login">
+            Help
           </a>
-        ) : (
-          <a href="/login" className="nav-login">
-            Account
-          </a>
-        )}
+
+          {user ? (
+            <a href="/account" className="nav-login">
+              {user.name || "Account"}
+            </a>
+          ) : (
+            <a href="/login" className="nav-login">
+              Account
+            </a>
+          )}
       </div>
     </header>
   );
@@ -171,7 +176,7 @@ function ProductDetails({ productId }) {
           store:
             found.business?.name ||
             found.businessName ||
-            "AXIOM Store",
+            "MERXIOM Store",
         });
       } catch (error) {
         console.error(error);
@@ -235,7 +240,7 @@ function ProductDetails({ productId }) {
               <img src={product.image} alt={product.name} />
             ) : (
               <div className="product-image-placeholder">
-                AXIOM
+                MERXIOM
               </div>
             )}
           </div>
@@ -253,13 +258,13 @@ function ProductDetails({ productId }) {
 
             <p className="product-detail-description">
               {product.description ||
-                "Quality product available on AXIOM."}
+                "Quality product available on MERXIOM."}
             </p>
 
             <p className="product-store">
               Sold by{" "}
               <strong>
-                {product.store || "AXIOM Store"}
+                {product.store || "MERXIOM Store"}
               </strong>
             </p>
 
@@ -312,7 +317,7 @@ function ProductDetails({ productId }) {
             <div className="product-detail-links">
               <a href="/cart">View cart →</a>
               <a href="/business">
-                Sell on AXIOM →
+                Sell on MERXIOM →
               </a>
             </div>
           </div>
@@ -379,7 +384,7 @@ function Cart() {
 
             <p>
               Discover products from businesses on
-              AXIOM.
+              MERXIOM.
             </p>
 
             <a href="/" className="primary-button">
@@ -431,7 +436,7 @@ function Cart() {
                     />
                   ) : (
                     <div className="product-image-placeholder">
-                      AXIOM
+                      MERXIOM
                     </div>
                   )}
                 </div>
@@ -539,7 +544,7 @@ function Cart() {
             </button>
 
             <p className="cart-secure">
-              Secure checkout powered by AXIOM
+              Secure checkout powered by MERXIOM
             </p>
           </aside>
         </div>
@@ -604,7 +609,7 @@ function Checkout() {
       }
 
       const token =
-        localStorage.getItem("axiom_token");
+        localStorage.getItem("merxiom_token");
 
       if (!token) {
         setError(
@@ -701,7 +706,7 @@ function Checkout() {
     setSelectedCourier(null);
 
     const token =
-      localStorage.getItem("axiom_token");
+      localStorage.getItem("merxiom_token");
 
     if (!token) {
       setError(
@@ -824,7 +829,7 @@ function Checkout() {
           name: item.name,
           description:
             item.description ||
-            `${item.name} from AXIOM`,
+            `${item.name} from MERXIOM`,
           unit_weight: 1,
           unit_amount: Number(item.price),
           quantity: Number(item.quantity),
@@ -951,7 +956,7 @@ function Checkout() {
     }
 
     const token =
-      localStorage.getItem("axiom_token");
+      localStorage.getItem("merxiom_token");
 
     if (!token) {
       window.location.href =
@@ -1067,7 +1072,7 @@ function Checkout() {
     }
   }
 
-  if (!localStorage.getItem("axiom_token")) {
+  if (!localStorage.getItem("merxiom_token")) {
     return (
       <>
         <Header />
@@ -1075,13 +1080,13 @@ function Checkout() {
         <main className="checkout-main">
           <section className="checkout-login-card">
             <p className="eyebrow">
-              AXIOM Checkout
+              MERXIOM Checkout
             </p>
 
             <h1>Sign in to continue</h1>
 
             <p>
-              You need an AXIOM account to enter
+              You need an MERXIOM account to enter
               delivery details and calculate real
               shipping rates.
             </p>
@@ -1113,7 +1118,7 @@ function Checkout() {
         <main className="checkout-main">
           <section className="checkout-login-card">
             <p className="eyebrow">
-              AXIOM Checkout
+              MERXIOM Checkout
             </p>
 
             <h1>Your cart is empty</h1>
@@ -1149,14 +1154,14 @@ function Checkout() {
         <div className="checkout-heading">
           <div>
             <p className="eyebrow">
-              AXIOM Checkout
+              MERXIOM Checkout
             </p>
 
             <h1>Delivery details</h1>
 
             <p>
               Enter your delivery information and
-              AXIOM will calculate real courier
+              MERXIOM will calculate real courier
               options for your order.
             </p>
           </div>
@@ -1407,7 +1412,7 @@ function Checkout() {
                           alt={item.name}
                         />
                       ) : (
-                        <span>AXIOM</span>
+                        <span>MERXIOM</span>
                       )}
                     </div>
 
@@ -1564,7 +1569,7 @@ function Market() {
             store:
               product.business?.name ||
               product.businessName ||
-              "AXIOM Store",
+              "MERXIOM Store",
             businessId:
               product.business?._id ||
               product.business?.id ||
@@ -1595,7 +1600,10 @@ function Market() {
           .map((product) =>
             String(
               product.category || ""
-            ).trim()
+            )
+              .trim()
+              .toLowerCase()
+              .replace(/\\b\\w/g, (char) => char.toUpperCase())
           )
           .filter(Boolean)
       )
@@ -1662,7 +1670,7 @@ function Market() {
             </h1>
 
             <p className="hero-copy">
-              AXIOM connects customers with
+              MERXIOM connects customers with
               Nigerian businesses, products
               and brands in one modern
               marketplace.
@@ -1688,7 +1696,7 @@ function Market() {
           <div className="hero-visual">
             <img
               src="/products/sneakers-1.png"
-              alt="AXIOM product"
+              alt="MERXIOM product"
             />
           </div>
         </section>
@@ -1810,7 +1818,7 @@ function Market() {
                       />
                     ) : (
                       <div className="product-image-placeholder">
-                        AXIOM
+                        MERXIOM
                       </div>
                     )}
                   </a>
@@ -1885,7 +1893,7 @@ function Market() {
             </h2>
 
             <p>
-              Create your AXIOM business,
+              Create your MERXIOM business,
               list products and start
               reaching customers online.
             </p>
@@ -1901,7 +1909,7 @@ function Market() {
 
         <section className="discover-section">
           <p className="eyebrow">
-            More coming to AXIOM
+            More coming to MERXIOM
           </p>
 
           <h2>
@@ -1915,7 +1923,7 @@ function Market() {
       </main>
 
       <footer className="site-footer">
-        <strong>AXIOM</strong>
+        <strong>MERXIOM</strong>
 
         <span>
           Nigerian commerce, built for
@@ -1927,6 +1935,10 @@ function Market() {
 }
 
 function App() {
+  if (window.location.pathname === "/help") {
+    return <HelpPage />;
+  }
+
   const path =
     window.location.pathname;
 

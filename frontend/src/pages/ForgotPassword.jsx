@@ -40,7 +40,7 @@ export default function ForgotPassword() {
       }
 
       setMessage(
-        "If an AXIOM account exists with that email, a password reset link will be sent."
+        "If an MERXIOM account exists with that email, a password reset link will be sent."
       );
     } catch (err) {
       setError(
@@ -58,7 +58,7 @@ export default function ForgotPassword() {
 
         <div className="auth-brand">
           <span className="brand-mark">A</span>
-          <span>AXIOM</span>
+          <span>MERXIOM</span>
         </div>
 
         <p className="eyebrow">
@@ -71,7 +71,7 @@ export default function ForgotPassword() {
 
         <p className="auth-intro">
           Enter the email connected to your
-          AXIOM account and we'll help you
+          MERXIOM account and we'll help you
           regain access.
         </p>
 

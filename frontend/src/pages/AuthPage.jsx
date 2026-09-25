@@ -64,12 +64,12 @@ function AuthPage() {
       }
 
       localStorage.setItem(
-        "axiom_token",
+        "merxiom_token",
         data.token
       );
 
       localStorage.setItem(
-        "axiom_user",
+        "merxiom_user",
         JSON.stringify(data.user)
       );
 
@@ -113,25 +113,25 @@ function AuthPage() {
 
         <div className="auth-brand">
           <span className="brand-mark">A</span>
-          <span>AXIOM</span>
+          <span>MERXIOM</span>
         </div>
 
         <p className="eyebrow">
           {mode === "login"
             ? "WELCOME BACK"
-            : "JOIN AXIOM"}
+            : "JOIN MERXIOM"}
         </p>
 
         <h1>
           {mode === "login"
-            ? "Sign in to AXIOM."
-            : "Create your AXIOM account."}
+            ? "Sign in to MERXIOM."
+            : "Create your MERXIOM account."}
         </h1>
 
         <p className="auth-intro">
           {mode === "login"
             ? "Sign in and we'll take you to the right place for your account."
-            : "Choose how you'll use AXIOM. You can shop or build your business."}
+            : "Choose how you'll use MERXIOM. You can shop or build your business."}
         </p>
 
         {mode === "register" && (
@@ -153,7 +153,7 @@ function AuthPage() {
               </span>
 
               <span>
-                <strong>Shop on AXIOM</strong>
+                <strong>Shop on MERXIOM</strong>
                 <small>
                   Discover products and place orders.
                 </small>
@@ -176,7 +176,7 @@ function AuthPage() {
               </span>
 
               <span>
-                <strong>Sell on AXIOM</strong>
+                <strong>Sell on MERXIOM</strong>
                 <small>
                   Create a store and sell products.
                 </small>
@@ -269,7 +269,7 @@ function AuthPage() {
         <div className="auth-switch">
           {mode === "login" ? (
             <>
-              Don't have an AXIOM account?{" "}
+              Don't have an MERXIOM account?{" "}
               <button
                 type="button"
                 onClick={switchMode}

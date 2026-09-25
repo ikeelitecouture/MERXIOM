@@ -17,10 +17,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const token = localStorage.getItem("axiom_token");
+        const token = localStorage.getItem("merxiom_token");
 
         if (!token) {
-          throw new Error("Please sign in as the AXIOM owner.");
+          throw new Error("Please sign in as the MERXIOM owner.");
         }
 
         const response = await fetch(`${API}/orders/admin/stats`, {
@@ -47,14 +47,14 @@ export default function AdminDashboard() {
   }, []);
 
   if (loading) {
-    return <div className="admin-page">Loading AXIOM Owner Dashboard...</div>;
+    return <div className="admin-page">Loading MERXIOM Owner Dashboard...</div>;
   }
 
   if (error) {
     return (
       <div className="admin-page">
         <div className="admin-error">
-          <h2>AXIOM Owner Access</h2>
+          <h2>MERXIOM Owner Access</h2>
           <p>{error}</p>
           <a href="/login">Sign in</a>
         </div>
@@ -66,9 +66,9 @@ export default function AdminDashboard() {
     <div className="admin-page">
       <header className="admin-header">
         <div>
-          <p className="admin-eyebrow">AXIOM OWNER</p>
+          <p className="admin-eyebrow">MERXIOM OWNER</p>
           <h1>Command Center</h1>
-          <p>Monitor the marketplace, orders and AXIOM revenue.</p>
+          <p>Monitor the marketplace, orders and MERXIOM revenue.</p>
         </div>
 
         <a href="/" className="admin-market-link">
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="admin-card admin-card-highlight">
-          <span>AXIOM Platform Revenue</span>
+          <span>MERXIOM Platform Revenue</span>
           <strong>{money(stats.platformRevenue)}</strong>
           <small>7.5% platform commission</small>
         </div>
