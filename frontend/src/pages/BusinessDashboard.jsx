@@ -37,6 +37,10 @@ function BusinessDashboard() {
     stock: "",
     status: "active",
     images: [],
+    shippingWeight: "1",
+    shippingLength: "30",
+    shippingWidth: "20",
+    shippingHeight: "10",
   });
 
   const token = localStorage.getItem("merxiom_token");
@@ -209,6 +213,11 @@ function BusinessDashboard() {
       category: "",
       stock: "",
       status: "active",
+      images: [],
+      shippingWeight: "1",
+      shippingLength: "30",
+      shippingWidth: "20",
+      shippingHeight: "10",
     });
 
     setMessage("");
@@ -225,6 +234,11 @@ function BusinessDashboard() {
       category: product.category || "",
       stock: product.stock ?? "",
       status: product.status || "active",
+      images: [],
+      shippingWeight: String(product.shipping?.weight ?? 1),
+      shippingLength: String(product.shipping?.length ?? 30),
+      shippingWidth: String(product.shipping?.width ?? 20),
+      shippingHeight: String(product.shipping?.height ?? 10),
     });
 
     setMessage("");
@@ -301,6 +315,16 @@ function BusinessDashboard() {
       formData.append("category", form.category.trim());
       formData.append("stock", stock);
       formData.append("status", form.status);
+
+      formData.append(
+        "shipping",
+        JSON.stringify({
+          weight: Number(form.shippingWeight || 1),
+          length: Number(form.shippingLength || 30),
+          width: Number(form.shippingWidth || 20),
+          height: Number(form.shippingHeight || 10),
+        })
+      );
 
       if (form.images && form.images.length > 0) {
         form.images.slice(0, 5).forEach((image) => {
@@ -1130,6 +1154,77 @@ function BusinessDashboard() {
                     placeholder="10"
                   />
                 </label>
+              </div>
+
+              <div className="product-shipping-section">
+                <div className="product-image-upload-heading">
+                  <span>Shipping information</span>
+                  <small>Used to calculate delivery rates</small>
+                </div>
+
+                <div className="product-form-grid">
+                  <label>
+                    Weight (kg)
+                    <input
+                      type="number"
+                      name="shippingWeight"
+                      value={form.shippingWeight}
+                      onChange={updateForm}
+                      min="0.01"
+                      step="0.01"
+                      placeholder="1"
+                      required
+                    />
+                    <small>Actual packed product weight</small>
+                  </label>
+
+                  <label>
+                    Length (cm)
+                    <input
+                      type="number"
+                      name="shippingLength"
+                      value={form.shippingLength}
+                      onChange={updateForm}
+                      min="1"
+                      step="1"
+                      placeholder="30"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Width (cm)
+                    <input
+                      type="number"
+                      name="shippingWidth"
+                      value={form.shippingWidth}
+                      onChange={updateForm}
+                      min="1"
+                      step="1"
+                      placeholder="20"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Height (cm)
+                    <input
+                      type="number"
+                      name="shippingHeight"
+                      value={form.shippingHeight}
+                      onChange={updateForm}
+                      min="1"
+                      step="1"
+                      placeholder="10"
+                      required
+                    />
+                  </label>
+                </div>
+
+                <p className="product-shipping-note">
+                  These details are used by MERXIOM to calculate delivery
+                  options and prices. Customers do not need to enter them.
+                </p>
               </div>
 
               <div className="product-image-upload">

@@ -14,6 +14,409 @@ const CART_KEY = "merxiom_cart";
 const TEMP_SENDER_ADDRESS_CODE = 160022252;
 const SHIPBUBBLE_CATEGORY_ID = 74794423;
 
+
+
+
+function MERXIOMInstallPrompt() {
+  const [installEvent, setInstallEvent] = useState(null);
+  const [installed, setInstalled] = useState(false);
+
+  useEffect(() => {
+    const standalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+
+    if (standalone) {
+      setInstalled(true);
+      return;
+    }
+
+    const handleBeforeInstallPrompt = (event) => {
+      event.preventDefault();
+      setInstallEvent(event);
+    };
+
+    const handleInstalled = () => {
+      setInstalled(true);
+      setInstallEvent(null);
+    };
+
+    window.addEventListener(
+      "beforeinstallprompt",
+      handleBeforeInstallPrompt
+    );
+
+    window.addEventListener(
+      "appinstalled",
+      handleInstalled
+    );
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
+
+      window.removeEventListener(
+        "appinstalled",
+        handleInstalled
+      );
+    };
+  }, []);
+
+  async function installMERXIOM() {
+    if (!installEvent) return;
+
+    installEvent.prompt();
+
+    const result = await installEvent.userChoice;
+
+    if (result.outcome === "accepted") {
+      setInstalled(true);
+    }
+
+    setInstallEvent(null);
+  }
+
+  if (installed || !installEvent) {
+    return null;
+  }
+
+  return (
+    <button
+      type="button"
+      className="merxiom-install-prompt"
+      onClick={installMERXIOM}
+      aria-label="Install MERXIOM"
+    >
+      <span className="merxiom-install-icon">↓</span>
+
+      <span>
+        <strong>Install MERXIOM</strong>
+        <small>Get the MERXIOM app on your phone</small>
+      </span>
+    </button>
+  );
+}
+
+function MERXIOMWhatsApp() {
+  const phone = "2348109174369";
+
+  const message =
+    "Hello MERXIOM 👋 I’m interested in MERXIOM and I’d like to make an enquiry.";
+
+  const url =
+    `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="merxiom-whatsapp"
+      aria-label="Chat with MERXIOM on WhatsApp"
+      title="Chat with MERXIOM on WhatsApp"
+    >
+      <span className="merxiom-whatsapp-icon">◉</span>
+      <span className="merxiom-whatsapp-label">
+        Chat with us
+      </span>
+    </a>
+  );
+}
+
+function MERXIOMAI() {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [conversationId, setConversationId] = useState(null);
+  const [conversations, setConversations] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      role: "ai",
+      text: "Hi 👋 I'm MERXIOM AI. Ask me about MERXIOM, products, orders, business, or anything you want to know."
+    }
+  ]);
+  const [loading, setLoading] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  function getToken() {
+    return localStorage.getItem("merxiom_token");
+  }
+
+  async function loadConversations() {
+    const token = getToken();
+
+    if (!token) return;
+
+    try {
+      setHistoryLoading(true);
+
+      const response = await fetch(
+        `${API}/ai/conversations`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setConversations(data.conversations || []);
+      }
+    } catch (error) {
+      console.error(
+        "MERXIOM chat history error:",
+        error
+      );
+    } finally {
+      setHistoryLoading(false);
+    }
+  }
+
+  async function openConversation(id) {
+    const token = getToken();
+
+    if (!token) return;
+
+    try {
+      const response = await fetch(
+        `${API}/ai/conversations/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message || "Unable to load conversation."
+        );
+      }
+
+      setConversationId(data.conversation._id);
+
+      setMessages(
+        (data.conversation.messages || []).map(
+          (item) => ({
+            role:
+              item.role === "user"
+                ? "user"
+                : "ai",
+            text: item.content
+          })
+        )
+      );
+    } catch (error) {
+      console.error(
+        "MERXIOM conversation error:",
+        error
+      );
+    }
+  }
+
+  function startNewConversation() {
+    setConversationId(null);
+
+    setMessages([
+      {
+        role: "ai",
+        text: "Fresh chat started 👋 What do you want to know?"
+      }
+    ]);
+
+    setMessage("");
+  }
+
+  async function askAI(event) {
+    event.preventDefault();
+
+    const text = message.trim();
+    if (!text || loading) return;
+
+    const token = getToken();
+
+    if (!token) {
+      setMessages((current) => [
+        ...current,
+        {
+          role: "ai",
+          text:
+            "Please sign in to use MERXIOM AI and save your conversations."
+        }
+      ]);
+      return;
+    }
+
+    setMessage("");
+
+    setMessages((current) => [
+      ...current,
+      {
+        role: "user",
+        text
+      }
+    ]);
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `${API}/ai/shopping`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            message: text,
+            conversationId
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message ||
+            "MERXIOM AI is unavailable."
+        );
+      }
+
+      setConversationId(data.conversationId);
+
+      setMessages((current) => [
+        ...current,
+        {
+          role: "ai",
+          text: data.message
+        }
+      ]);
+
+      await loadConversations();
+    } catch (error) {
+      setMessages((current) => [
+        ...current,
+        {
+          role: "ai",
+          text:
+            error.message ||
+            "Sorry, I couldn't process that request."
+        }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (open) {
+      loadConversations();
+    }
+  }, [open]);
+
+  return (
+    <>
+      {open && (
+        <section className="merxiom-ai-panel">
+          <div className="merxiom-ai-header">
+            <div>
+              <strong>MERXIOM AI</strong>
+              <span>
+                Your intelligent MERXIOM assistant
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={startNewConversation}
+            >
+              + New
+            </button>
+          </div>
+
+          <div className="merxiom-ai-history">
+            {historyLoading ? (
+              <span>Loading chats...</span>
+            ) : conversations.length === 0 ? (
+              <span>No previous chats</span>
+            ) : (
+              conversations.map((conversation) => (
+                <button
+                  type="button"
+                  key={conversation._id}
+                  onClick={() =>
+                    openConversation(
+                      conversation._id
+                    )
+                  }
+                >
+                  {conversation.title ||
+                    "Conversation"}
+                </button>
+              ))
+            )}
+          </div>
+
+          <div className="merxiom-ai-messages">
+            {messages.map((item, index) => (
+              <div
+                key={index}
+                className={`merxiom-ai-message ${item.role}`}
+              >
+                {item.text}
+              </div>
+            ))}
+
+            {loading && (
+              <div className="merxiom-ai-message ai">
+                MERXIOM AI is thinking...
+              </div>
+            )}
+          </div>
+
+          <form
+            className="merxiom-ai-form"
+            onSubmit={askAI}
+          >
+            <input
+              value={message}
+              onChange={(event) =>
+                setMessage(event.target.value)
+              }
+              placeholder="Ask anything..."
+              disabled={loading}
+            />
+
+            <button
+              type="submit"
+              disabled={
+                loading || !message.trim()
+              }
+            >
+              Send
+            </button>
+          </form>
+        </section>
+      )}
+
+      <button
+        type="button"
+        className="merxiom-ai-launcher"
+        onClick={() => setOpen((value) => !value)}
+      >
+        {open ? "Close AI" : "Ask MERXIOM AI"}
+      </button>
+    </>
+  );
+}
+
 function formatPrice(price) {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -61,6 +464,12 @@ function addItemToCart(product, quantity = 1) {
         "",
       stock: Number(product.stock || 999),
       quantity,
+      shipping: {
+        weight: Number(product.shipping?.weight || 1),
+        length: Number(product.shipping?.length || 30),
+        width: Number(product.shipping?.width || 20),
+        height: Number(product.shipping?.height || 10),
+      },
     });
   }
 
@@ -830,9 +1239,15 @@ function Checkout() {
           description:
             item.description ||
             `${item.name} from MERXIOM`,
-          unit_weight: 1,
-          unit_amount: Number(item.price),
-          quantity: Number(item.quantity),
+          unit_weight: String(
+            Number(item.shipping?.weight || 1)
+          ),
+          unit_amount: String(
+            Number(item.price)
+          ),
+          quantity: String(
+            Number(item.quantity)
+          ),
         })
       );
 

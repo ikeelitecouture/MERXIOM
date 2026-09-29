@@ -10,7 +10,8 @@ const createProduct = async (req, res) => {
       price,
       category,
       stock,
-      images
+      images,
+      shipping
     } = req.body;
 
     const uploadedImages = (req.files || []).map(
@@ -44,7 +45,12 @@ const createProduct = async (req, res) => {
       category,
       stock: stock || 0,
       images: uploadedImages,
-      status: "active"
+      status: req.body.status || "active",
+      shipping: shipping
+        ? (typeof shipping === "string"
+            ? JSON.parse(shipping)
+            : shipping)
+        : undefined
     });
 
     res.status(201).json({
@@ -144,12 +150,20 @@ const updateProduct = async (req, res) => {
       "category",
       "stock",
       "images",
-      "status"
+      "status",
+      "shipping"
     ];
 
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {
-        product[field] = req.body[field];
+        if (field === "shipping") {
+          product[field] =
+            typeof req.body[field] === "string"
+              ? JSON.parse(req.body[field])
+              : req.body[field];
+        } else {
+          product[field] = req.body[field];
+        }
       }
     });
 

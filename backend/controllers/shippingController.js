@@ -1,7 +1,4 @@
-const {
-  validateAddress,
-  fetchShippingRates
-} = require("../services/shipbubble");
+const { getQuote } = require("../services/obana");
 
 const validateCustomerAddress = async (req, res) => {
   try {
@@ -10,38 +7,49 @@ const validateCustomerAddress = async (req, res) => {
       email,
       phone,
       address,
-      latitude,
-      longitude
+      city,
+      state,
+      country = "Nigeria"
     } = req.body;
 
-    if (!name || !email || !phone || !address) {
+    if (
+      !name ||
+      !email ||
+      !phone ||
+      !address ||
+      !city ||
+      !state
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Name, email, phone and address are required"
+        message:
+          "Name, email, phone, address, city and state are required"
       });
     }
 
-    const result = await validateAddress({
-      name,
-      email,
-      phone,
-      address,
-      latitude,
-      longitude
-    });
-
     res.json({
       success: true,
-      message: "Address validated successfully",
-      data: result.data
+      message: "Delivery address accepted",
+      data: {
+        name,
+        email,
+        phone,
+        address,
+        city,
+        state,
+        country,
+        addressValidated: true
+      }
     });
   } catch (error) {
-    console.error("Shipbubble address validation error:", error.data || error.message);
+    console.error(
+      "Obana address validation error:",
+      error.message
+    );
 
-    res.status(error.status || 500).json({
+    res.status(500).json({
       success: false,
       message:
-        error.data?.message ||
         error.message ||
         "Failed to validate address"
     });
@@ -51,70 +59,88 @@ const validateCustomerAddress = async (req, res) => {
 const getShippingRates = async (req, res) => {
   try {
     const {
-      senderAddressCode,
-      receiverAddressCode,
-      pickupDate,
-      categoryId,
-      packageItems,
-      packageDimension,
-      deliveryInstructions
+      origin,
+      destination,
+      weightKg,
+      declaredValue
     } = req.body;
 
-    if (
-      !senderAddressCode ||
-      !receiverAddressCode ||
-      !pickupDate ||
-      !categoryId ||
-      !Array.isArray(packageItems) ||
-      packageItems.length === 0 ||
-      !packageDimension
-    ) {
+    if (!origin || !destination) {
       return res.status(400).json({
         success: false,
-        message: "Complete shipping rate information is required"
+        message:
+          "Pickup and delivery locations are required"
       });
     }
 
-    const result = await fetchShippingRates({
-      senderAddressCode,
-      receiverAddressCode,
-      pickupDate,
-      categoryId,
-      packageItems,
-      packageDimension,
-      deliveryInstructions
+    if (!origin.country || !origin.state || !origin.city) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Pickup country, state and city are required"
+      });
+    }
+
+    if (
+      !destination.country ||
+      !destination.state ||
+      !destination.city
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Delivery country, state and city are required"
+      });
+    }
+
+    if (!Number(weightKg) || Number(weightKg) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "A valid package weight is required"
+      });
+    }
+
+    const result = await getQuote({
+      origin,
+      destination,
+      weightKg,
+      declaredValue: declaredValue || 0
     });
 
-    const requestToken =
-      result?.data?.request_token ||
-      result?.request_token ||
-      "";
-
-    const couriers = Array.isArray(
-      result?.data?.couriers
-    )
-      ? result.data.couriers.map((courier) => ({
-          ...courier,
-          request_token: requestToken
-        }))
+    const options = Array.isArray(result?.data?.options)
+      ? result.data.options
       : [];
+
+    const couriers = options.map((option) => ({
+      courier_name: option.carrier_name || "Obana Logistics",
+      service_code: option.id || "",
+      courier_id: option.id || "",
+      service_level: option.service_level || "",
+      eta: option.eta || "",
+      total: Number(option.price || 0),
+      amount: Number(option.price || 0),
+      provider: "obana",
+      quote_reference: result?.data?.reference || ""
+    }));
 
     res.json({
       success: true,
-      message: "Shipping rates retrieved successfully",
+      message: "Obana shipping rates retrieved successfully",
       data: {
         ...result.data,
-        request_token: requestToken,
         couriers
       }
     });
   } catch (error) {
-    console.error("Shipbubble rate error:", error.data || error.message);
+    console.error(
+      "Obana rate error:",
+      error.message
+    );
 
-    res.status(error.status || 500).json({
+    res.status(502).json({
       success: false,
       message:
-        error.data?.message ||
         error.message ||
         "Failed to fetch shipping rates"
     });

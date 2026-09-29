@@ -47,14 +47,14 @@ const businessSchema = new mongoose.Schema(
         default: ""
       },
 
+      country: {
+        type: String,
+        default: "Nigeria"
+      },
+
       phone: {
         type: String,
         default: ""
-      },
-
-      shipbubbleAddressCode: {
-        type: Number,
-        default: null
       },
 
       addressValidated: {

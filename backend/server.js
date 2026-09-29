@@ -9,6 +9,9 @@ const productRoutes = require("./routes/product");
 const orderRoutes = require("./routes/order");
 const shippingRoutes = require("./routes/shipping");
 const paymentRoutes = require("./routes/payment");
+const obanaRoutes = require("./routes/obana");
+const aiRoutes = require("./routes/ai");
+const aiConversationRoutes = require("./routes/aiConversations");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -26,6 +29,9 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/shipping", shippingRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/obana", obanaRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/ai/conversations", aiConversationRoutes);
 
 app.get("/", (req, res) => {
   res.json({

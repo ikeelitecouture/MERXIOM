@@ -102,13 +102,14 @@ const validateBusinessShippingAddress = async (req, res) => {
       phone,
       address,
       city,
-      state
+      state,
+      country = "Nigeria"
     } = req.body;
 
-    if (!name || !email || !phone || !address) {
+    if (!name || !email || !phone || !address || !city || !state) {
       return res.status(400).json({
         success: false,
-        message: "Name, email, phone and pickup address are required"
+        message: "Name, email, phone, address, city and state are required"
       });
     }
 
@@ -124,33 +125,12 @@ const validateBusinessShippingAddress = async (req, res) => {
       });
     }
 
-    const fullAddress = [address, city, state, "Nigeria"]
-      .filter(Boolean)
-      .join(", ");
-
-    const result = await validateAddress({
-      name,
-      email,
-      phone,
-      address: fullAddress
-    });
-
-    const addressData = result?.data;
-
-    if (!addressData?.address_code) {
-      return res.status(502).json({
-        success: false,
-        message: "Shipbubble did not return a valid address code",
-        data: addressData || null
-      });
-    }
-
     business.shipping = {
       pickupAddress: address,
-      city: city || "",
-      state: state || "",
+      city,
+      state,
+      country,
       phone,
-      shipbubbleAddressCode: Number(addressData.address_code),
       addressValidated: true,
       addressValidatedAt: new Date()
     };
@@ -159,22 +139,20 @@ const validateBusinessShippingAddress = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Business pickup address validated successfully",
-      shipping: business.shipping,
-      shipbubble: addressData
+      message: "Business pickup address saved successfully",
+      shipping: business.shipping
     });
   } catch (error) {
     console.error(
-      "Business shipping validation error:",
-      error.data || error.message
+      "Business shipping address error:",
+      error.message
     );
 
-    res.status(error.status || 500).json({
+    res.status(500).json({
       success: false,
       message:
-        error.data?.message ||
         error.message ||
-        "Failed to validate business pickup address"
+        "Failed to save business pickup address"
     });
   }
 };
