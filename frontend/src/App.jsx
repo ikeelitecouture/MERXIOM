@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./App.css";
@@ -4022,6 +4022,70 @@ const MERXIOM_CATEGORY_MAP = {
   ],
 };
 
+function MERXIOMCategorySelect({ label, value, options, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const close = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", close);
+    document.addEventListener("touchstart", close);
+
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("touchstart", close);
+    };
+  }, []);
+
+  const selected = options.find((option) => option.value === value);
+
+  return (
+    <div className="merxiom-custom-select" ref={ref}>
+      <span className="merxiom-custom-select-label">{label}</span>
+
+      <button
+        type="button"
+        className={`merxiom-custom-select-trigger ${
+          open ? "open" : ""
+        }`}
+        onClick={() => setOpen((current) => !current)}
+        aria-expanded={open}
+      >
+        <span>{selected?.label || value}</span>
+        <span className="merxiom-custom-select-chevron">⌄</span>
+      </button>
+
+      {open && (
+        <div className="merxiom-custom-select-menu">
+          {options.map((option) => (
+            <button
+              type="button"
+              key={option.value}
+              className={`merxiom-custom-select-option ${
+                option.value === value ? "selected" : ""
+              }`}
+              onClick={() => {
+                onChange(option.value);
+                setOpen(false);
+              }}
+            >
+              <span>{option.label}</span>
+              {option.value === value && (
+                <span className="merxiom-custom-select-check">✓</span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function CategoryPage({ categorySlug }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -4205,102 +4269,58 @@ function CategoryPage({ categorySlug }) {
             </div>
 
             <div className="merxiom-category-controls">
-              <label>
-                <span>Category</span>
-                <select
-                  value={categorySlug}
-                  onChange={(e) =>
-                    goToCategory(e.target.value)
-                  }
-                >
-                  <option value="phones-and-tablets">
-                    Phones & Tablets
-                  </option>
-                  <option value="electronics">
-                    Electronics
-                  </option>
-                  <option value="fashion">
-                    Fashion
-                  </option>
-                  <option value="shoes">
-                    Shoes
-                  </option>
-                  <option value="beauty">
-                    Beauty
-                  </option>
-                  <option value="home-and-living">
-                    Home & Living
-                  </option>
-                  <option value="computers">
-                    Computers
-                  </option>
-                  <option value="accessories">
-                    Accessories
-                  </option>
-                  <option value="sports-and-fitness">
-                    Sports & Fitness
-                  </option>
-                  <option value="baby-and-kids">
-                    Baby & Kids
-                  </option>
-                  <option value="automotive">
-                    Automotive
-                  </option>
-                  <option value="services">
-                    Services
-                  </option>
-                </select>
-              </label>
+              <MERXIOMCategorySelect
+                label="Category"
+                value={categorySlug}
+                onChange={goToCategory}
+                options={[
+                  { value: "phones-and-tablets", label: "Phones & Tablets" },
+                  { value: "electronics", label: "Electronics" },
+                  { value: "fashion", label: "Fashion" },
+                  { value: "shoes", label: "Shoes" },
+                  { value: "beauty", label: "Beauty" },
+                  { value: "home-and-living", label: "Home & Living" },
+                  { value: "computers", label: "Computers" },
+                  { value: "accessories", label: "Accessories" },
+                  { value: "sports-and-fitness", label: "Sports & Fitness" },
+                  { value: "baby-and-kids", label: "Baby & Kids" },
+                  { value: "automotive", label: "Automotive" },
+                  { value: "services", label: "Services" },
+                ]}
+              />
 
-              <label>
-                <span>Sort by</span>
-                <select
-                  value={sortBy}
-                  onChange={(e) =>
-                    setSortBy(e.target.value)
-                  }
-                >
-                  <option value="relevance">
-                    Relevance
-                  </option>
-                  <option value="newest">
-                    Newest
-                  </option>
-                  <option value="price-low">
-                    Price: Low to High
-                  </option>
-                  <option value="price-high">
-                    Price: High to Low
-                  </option>
-                </select>
-              </label>
+              <MERXIOMCategorySelect
+                label="Sort by"
+                value={sortBy}
+                onChange={setSortBy}
+                options={[
+                  { value: "relevance", label: "Relevance" },
+                  { value: "newest", label: "Newest" },
+                  { value: "price-low", label: "Price: Low to High" },
+                  { value: "price-high", label: "Price: High to Low" },
+                ]}
+              />
 
-              <label>
-                <span>Condition</span>
-                <select
-                  value={condition}
-                  onChange={(e) =>
-                    setCondition(e.target.value)
-                  }
-                >
-                  <option value="All">All</option>
-                  <option value="New">New</option>
-                  <option value="Used">Used</option>
-                </select>
-              </label>
+              <MERXIOMCategorySelect
+                label="Condition"
+                value={condition}
+                onChange={setCondition}
+                options={[
+                  { value: "All", label: "All" },
+                  { value: "New", label: "New" },
+                  { value: "Used", label: "Used" },
+                ]}
+              />
 
-              <label>
-                <span>Location</span>
-                <select
-                  value={locationFilter}
-                  onChange={(e) =>
-                    setLocationFilter(e.target.value)
-                  }
-                >
-                  <option value="All">All locations</option>
-                  <option value="Nigeria">Nigeria</option>
-                </select>
-              </label>
+              <MERXIOMCategorySelect
+                label="Location"
+                value={locationFilter}
+                onChange={setLocationFilter}
+                options={[
+                  { value: "All", label: "All locations" },
+                  { value: "Nigeria", label: "Nigeria" },
+                ]}
+              />
             </div>
           </div>
 
@@ -4796,11 +4816,15 @@ function DiscoverPage() {
   }, []);
 
   const productImage = (product) => {
-    if (Array.isArray(product?.images) && product.images.length) {
-      return product.images[0];
-    }
+    const image =
+      Array.isArray(product?.images) && product.images.length
+        ? product.images[0]
+        : product?.image || product?.imageUrl;
 
-    return product?.image || product?.imageUrl || "/logo.png";
+    if (!image) return "/logo.png";
+    if (image.startsWith("http")) return image;
+
+    return `${API.replace(/\/api\/?$/, "")}${image}`;
   };
 
   const formatPrice = (price) => {
