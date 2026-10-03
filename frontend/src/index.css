@@ -5,3 +5,1220 @@ html {
 body {
   min-width: 320px;
 }
+
+/* MERXIOM AI — true full-page workspace */
+.merxiom-ai-page {
+  width: 100%;
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.merxiom-ai-page .merxiom-ai-workspace {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 24px 28px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.merxiom-ai-page .merxiom-ai-topbar {
+  flex: 0 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.merxiom-ai-page .merxiom-ai-suggestions {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.merxiom-ai-page .merxiom-ai-page-chat {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+}
+
+.merxiom-ai-page .merxiom-ai-page-chat .merxiom-ai-overlay {
+  position: static;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  display: flex;
+}
+
+.merxiom-ai-page .merxiom-ai-page-chat .merxiom-ai-panel {
+  position: static;
+  inset: auto;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  margin: 0;
+  border-radius: 18px;
+  box-sizing: border-box;
+}
+
+.merxiom-ai-page .merxiom-ai-page-chat .merxiom-ai-layout {
+  min-height: 0;
+  flex: 1;
+}
+
+@media (max-width: 800px) {
+  .merxiom-ai-page .merxiom-ai-workspace {
+    padding: 16px 10px 10px;
+  }
+
+  .merxiom-ai-page .merxiom-ai-topbar {
+    gap: 12px;
+  }
+
+  .merxiom-ai-page .merxiom-ai-topbar p {
+    margin-bottom: 12px;
+  }
+
+  .merxiom-ai-page .merxiom-ai-page-chat .merxiom-ai-panel {
+    border-radius: 14px;
+  }
+}
+
+/* =========================================================
+   MERXIOM AI — PREMIUM PAGE STYLING
+   ========================================================= */
+
+.merxiom-ai-page {
+  background:
+    radial-gradient(circle at 85% 8%, rgba(0,0,0,.045), transparent 28%),
+    #f7f7f3;
+  color: #111;
+}
+
+.merxiom-ai-page .merxiom-ai-workspace {
+  gap: 18px;
+}
+
+.merxiom-ai-page .merxiom-ai-topbar {
+  align-items: center;
+}
+
+.merxiom-ai-page .merxiom-ai-topbar .eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #777;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.merxiom-ai-page .merxiom-ai-topbar h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 52px);
+  line-height: .98;
+  letter-spacing: -.055em;
+  font-weight: 800;
+}
+
+.merxiom-ai-page .merxiom-ai-topbar p {
+  max-width: 650px;
+  margin: 10px 0 0;
+  color: #70706a;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.merxiom-ai-page .merxiom-ai-close {
+  flex: 0 0 auto;
+  padding: 10px 15px;
+  border: 1px solid #d8d8d1;
+  border-radius: 999px;
+  background: rgba(255,255,255,.72);
+  color: #111;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: .2s ease;
+}
+
+.merxiom-ai-page .merxiom-ai-close:hover {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.merxiom-ai-page .merxiom-ai-suggestions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.merxiom-ai-page .merxiom-ai-suggestions button {
+  appearance: none;
+  border: 1px solid #deded7;
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: rgba(255,255,255,.8);
+  color: #333;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.merxiom-ai-page .merxiom-ai-suggestions button:hover {
+  transform: translateY(-1px);
+  border-color: #111;
+  background: #111;
+  color: #fff;
+}
+
+.merxiom-ai-page .merxiom-ai-page-chat {
+  border: 1px solid #deded7;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 18px 55px rgba(0,0,0,.07);
+  overflow: hidden;
+}
+
+/* Remove the old floating-chat visual treatment */
+.merxiom-ai-page .merxiom-ai-page-chat .merxiom-ai-panel {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+}
+
+/* AI header */
+.merxiom-ai-page .merxiom-ai-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #ededE8;
+  background: #fff;
+}
+
+.merxiom-ai-page .merxiom-ai-header strong {
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+
+.merxiom-ai-page .merxiom-ai-header span {
+  color: #888;
+  font-size: 10px;
+}
+
+/* History */
+.merxiom-ai-page .merxiom-ai-history {
+  background: #f8f8f5;
+  border-right: 1px solid #e8e8e2;
+}
+
+/* Chat area */
+.merxiom-ai-page .merxiom-ai-chat {
+  background: #fff;
+}
+
+.merxiom-ai-page .merxiom-ai-messages {
+  padding: 22px;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(0,0,0,.025), transparent 30%),
+    #fff;
+}
+
+/* Message bubbles */
+.merxiom-ai-page .merxiom-ai-message {
+  max-width: min(720px, 86%);
+}
+
+.merxiom-ai-page .merxiom-ai-message.user {
+  align-self: flex-end;
+}
+
+.merxiom-ai-page .merxiom-ai-message.ai {
+  align-self: flex-start;
+}
+
+.merxiom-ai-page .merxiom-ai-message-text {
+  padding: 11px 14px;
+  border-radius: 15px;
+  font-size: 12px;
+}
+
+.merxiom-ai-page .merxiom-ai-message.ai .merxiom-ai-message-text {
+  border: 1px solid #e4e4de;
+  background: #f7f7f3;
+}
+
+.merxiom-ai-page .merxiom-ai-message.user .merxiom-ai-message-text {
+  background: #111;
+  color: #fff;
+}
+
+/* Input area */
+.merxiom-ai-page .merxiom-ai-form {
+  padding: 12px;
+  border-top: 1px solid #e8e8e2;
+  background: #fff;
+}
+
+.merxiom-ai-page .merxiom-ai-form input {
+  border-color: #deded7;
+  background: #f8f8f5;
+}
+
+.merxiom-ai-page .merxiom-ai-form button[type="submit"] {
+  border-radius: 12px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .merxiom-ai-page .merxiom-ai-workspace {
+    gap: 12px;
+  }
+
+  .merxiom-ai-page .merxiom-ai-topbar {
+    align-items: flex-start;
+  }
+
+  .merxiom-ai-page .merxiom-ai-topbar h1 {
+    font-size: 34px;
+  }
+
+  .merxiom-ai-page .merxiom-ai-topbar p {
+    font-size: 12px;
+  }
+
+  .merxiom-ai-page .merxiom-ai-close {
+    padding: 8px 11px;
+    font-size: 9px;
+  }
+
+  .merxiom-ai-page .merxiom-ai-suggestions {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .merxiom-ai-page .merxiom-ai-suggestions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .merxiom-ai-page .merxiom-ai-suggestions button {
+    flex: 0 0 auto;
+  }
+
+  .merxiom-ai-page .merxiom-ai-messages {
+    padding: 14px;
+  }
+
+  .merxiom-ai-page .merxiom-ai-message {
+    max-width: 92%;
+  }
+}
+
+/* MERXIOM AI — rich response formatting */
+.merxiom-ai-message-text > :first-child {
+  margin-top: 0;
+}
+
+.merxiom-ai-message-text > :last-child {
+  margin-bottom: 0;
+}
+
+.merxiom-ai-message-text p {
+  margin: 0 0 10px;
+  line-height: 1.65;
+}
+
+.merxiom-ai-message-text strong {
+  font-weight: 800;
+}
+
+.merxiom-ai-message-text em {
+  font-style: italic;
+}
+
+.merxiom-ai-message-text h1,
+.merxiom-ai-message-text h2,
+.merxiom-ai-message-text h3 {
+  margin: 14px 0 8px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.merxiom-ai-message-text h1 {
+  font-size: 20px;
+}
+
+.merxiom-ai-message-text h2 {
+  font-size: 17px;
+}
+
+.merxiom-ai-message-text h3 {
+  font-size: 14px;
+}
+
+.merxiom-ai-message-text ul,
+.merxiom-ai-message-text ol {
+  margin: 8px 0 12px;
+  padding-left: 20px;
+}
+
+.merxiom-ai-message-text li {
+  margin: 5px 0;
+  line-height: 1.55;
+}
+
+.merxiom-ai-message-text blockquote {
+  margin: 12px 0;
+  padding: 9px 13px;
+  border-left: 3px solid #111;
+  background: rgba(0,0,0,.035);
+  color: #555;
+}
+
+.merxiom-ai-message-text a {
+  color: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.merxiom-ai-message-text code {
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: #ededE8;
+  font-size: .9em;
+}
+
+.merxiom-ai-message-text pre {
+  margin: 10px 0;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: #151515;
+  color: #fff;
+}
+
+.merxiom-ai-message-text pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.merxiom-ai-message-text table {
+  width: 100%;
+  margin: 12px 0;
+  border-collapse: collapse;
+  font-size: 11px;
+  overflow: hidden;
+}
+
+.merxiom-ai-message-text th,
+.merxiom-ai-message-text td {
+  padding: 8px 9px;
+  border: 1px solid #deded7;
+  text-align: left;
+  vertical-align: top;
+}
+
+.merxiom-ai-message-text th {
+  background: #f1f1ec;
+  font-weight: 800;
+}
+
+.merxiom-ai-message-text tr:nth-child(even) td {
+  background: #fafaf7;
+}
+
+@media (max-width: 600px) {
+  .merxiom-ai-message-text table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .merxiom-ai-message-text th,
+  .merxiom-ai-message-text td {
+    padding: 7px 8px;
+  }
+}
+
+/* =========================================================
+   MERXIOM AI — PRODUCT COMPARISON
+   ========================================================= */
+
+.merxiom-ai-comparison {
+  width: 100%;
+  margin-top: 14px;
+  border: 1px solid #e5e5df;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.merxiom-ai-comparison-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #ecece7;
+}
+
+.merxiom-ai-comparison-heading strong {
+  font-size: 13px;
+  color: #161616;
+}
+
+.merxiom-ai-comparison-heading span {
+  font-size: 11px;
+  color: #888880;
+}
+
+.merxiom-ai-comparison-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.merxiom-ai-comparison table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.merxiom-ai-comparison th,
+.merxiom-ai-comparison td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eeeeea;
+  border-right: 1px solid #eeeeea;
+  text-align: left;
+  vertical-align: top;
+}
+
+.merxiom-ai-comparison thead th {
+  background: #f7f7f3;
+  color: #222;
+  font-weight: 650;
+}
+
+.merxiom-ai-comparison tbody th {
+  width: 100px;
+  background: #fafaf7;
+  color: #77776f;
+  font-weight: 600;
+}
+
+.merxiom-ai-comparison tbody td {
+  color: #333;
+}
+
+.merxiom-ai-comparison tbody tr:last-child th,
+.merxiom-ai-comparison tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.merxiom-ai-comparison th:last-child,
+.merxiom-ai-comparison td:last-child {
+  border-right: 0;
+}
+
+@media (max-width: 800px) {
+  .merxiom-ai-comparison {
+    border-radius: 12px;
+  }
+
+  .merxiom-ai-comparison-heading {
+    padding: 11px 12px;
+  }
+
+  .merxiom-ai-comparison table {
+    min-width: 500px;
+    font-size: 11px;
+  }
+
+  .merxiom-ai-comparison th,
+  .merxiom-ai-comparison td {
+    padding: 9px 10px;
+  }
+}
+
+
+/* MERXIOM ACCOUNT NAVIGATION */
+.account-page .account-navigation {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin: 0 auto 28px;
+  text-align: left;
+}
+
+.account-page .account-navigation-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+  color: #d8d8d8;
+  text-decoration: none;
+  transition:
+    border-color .18s ease,
+    background .18s ease,
+    color .18s ease,
+    transform .18s ease;
+}
+
+.account-page .account-navigation-item span {
+  color: #d4af37;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.account-page .account-navigation-item strong {
+  color: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.account-page .account-navigation-item:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+  background: rgba(212, 175, 55, 0.07);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.account-page .account-navigation-item.active {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.18),
+    rgba(140, 107, 24, 0.12)
+  );
+  border-color: rgba(212, 175, 55, 0.55);
+  color: #fff;
+}
+
+.account-page .account-navigation-item.active span {
+  color: #d4af37;
+}
+
+@media (max-width: 649px) {
+  .account-page .account-navigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .account-page .account-navigation-item {
+    min-height: 46px;
+    padding: 9px 10px;
+  }
+}
+
+/* =========================================================
+   MERXIOM SETTINGS
+   ========================================================= */
+
+.merxiom-settings-page {
+  min-height: 100vh;
+  background: #f7f7f4;
+  color: #171717;
+}
+
+.merxiom-settings-main {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 42px 0 80px;
+}
+
+.merxiom-settings-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 28px;
+}
+
+.merxiom-settings-heading h1 {
+  margin: 4px 0 8px;
+  font-size: clamp(32px, 5vw, 48px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.merxiom-settings-heading p:not(.eyebrow) {
+  margin: 0;
+  max-width: 620px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.merxiom-settings-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.merxiom-settings-nav {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid #e2e2dc;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.merxiom-settings-nav a {
+  display: block;
+  padding: 12px 13px;
+  border-radius: 10px;
+  color: #555;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+  transition: background .18s ease, color .18s ease;
+}
+
+.merxiom-settings-nav a:hover,
+.merxiom-settings-nav a.active {
+  background: #111;
+  color: #fff;
+}
+
+.merxiom-settings-content {
+  display: grid;
+  gap: 18px;
+}
+
+.merxiom-settings-card {
+  scroll-margin-top: 24px;
+  padding: 26px;
+  border: 1px solid #e2e2dc;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .035);
+}
+
+.merxiom-settings-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.merxiom-settings-card-heading h2 {
+  margin: 3px 0 0;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+.merxiom-settings-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 16px;
+  margin-bottom: 18px;
+  border-radius: 14px;
+  background: #f7f7f4;
+}
+
+.merxiom-settings-avatar {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.merxiom-settings-profile strong,
+.merxiom-settings-profile span,
+.merxiom-settings-profile small {
+  display: block;
+}
+
+.merxiom-settings-profile strong {
+  margin-bottom: 3px;
+}
+
+.merxiom-settings-profile span {
+  color: #666;
+  font-size: 14px;
+}
+
+.merxiom-settings-profile small {
+  margin-top: 4px;
+  color: #999;
+}
+
+.merxiom-settings-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.merxiom-settings-info-grid > div {
+  padding: 14px;
+  border: 1px solid #e7e7e2;
+  border-radius: 12px;
+}
+
+.merxiom-settings-info-grid span,
+.merxiom-settings-info-grid strong {
+  display: block;
+}
+
+.merxiom-settings-info-grid span {
+  margin-bottom: 5px;
+  color: #888;
+  font-size: 12px;
+}
+
+.merxiom-settings-info-grid strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.merxiom-settings-row,
+.merxiom-settings-toggle-row,
+.merxiom-settings-danger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 17px 0;
+  border-top: 1px solid #ededE8;
+}
+
+.merxiom-settings-row:first-of-type,
+.merxiom-settings-toggle-row:first-of-type {
+  border-top: 0;
+}
+
+.merxiom-settings-row > div,
+.merxiom-settings-toggle-row > div,
+.merxiom-settings-danger > div {
+  min-width: 0;
+}
+
+.merxiom-settings-row strong,
+.merxiom-settings-toggle-row strong,
+.merxiom-settings-danger strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.merxiom-settings-row span,
+.merxiom-settings-toggle-row span,
+.merxiom-settings-danger span {
+  display: block;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.settings-action {
+  flex: 0 0 auto;
+  color: #111;
+  font-size: 13px;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.settings-action:hover {
+  text-decoration: underline;
+}
+
+.merxiom-settings-toggle-row input,
+.merxiom-settings-inline-toggle input {
+  width: 19px;
+  height: 19px;
+  accent-color: #111;
+}
+
+.merxiom-settings-inline-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  color: #444;
+  font-size: 13px;
+}
+
+.merxiom-settings-danger {
+  margin-top: 8px;
+  padding: 18px;
+  border: 1px solid #eadada;
+  border-radius: 13px;
+  background: #fff8f8;
+}
+
+.merxiom-settings-danger button {
+  flex: 0 0 auto;
+  border: 1px solid #b3261e;
+  border-radius: 9px;
+  padding: 9px 13px;
+  background: transparent;
+  color: #a51d18;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+@media (max-width: 800px) {
+  .merxiom-settings-main {
+    width: min(100% - 20px, 680px);
+    padding: 26px 0 92px;
+  }
+
+  .merxiom-settings-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .merxiom-settings-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .merxiom-settings-nav {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .merxiom-settings-nav a {
+    text-align: center;
+  }
+
+  .merxiom-settings-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .merxiom-settings-main {
+    width: min(100% - 14px, 680px);
+  }
+
+  .merxiom-settings-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .merxiom-settings-row,
+  .merxiom-settings-toggle-row,
+  .merxiom-settings-danger {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .settings-action,
+  .merxiom-settings-inline-toggle,
+  .merxiom-settings-danger button {
+    align-self: stretch;
+  }
+
+  .merxiom-settings-inline-toggle {
+    justify-content: space-between;
+  }
+}
+
+/* =========================================================
+   MERXIOM ACCOUNT ADDRESS FORM
+   ========================================================= */
+
+.account-page .account-address-heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.account-page .account-address-add-button,
+.account-page .account-address-save-button {
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 10px;
+  background: rgba(212, 175, 55, 0.08);
+  color: #f1d77a;
+  padding: 9px 13px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    transform .18s ease;
+}
+
+.account-page .account-address-add-button:hover,
+.account-page .account-address-save-button:hover {
+  background: rgba(212, 175, 55, 0.16);
+  border-color: rgba(212, 175, 55, 0.75);
+  transform: translateY(-1px);
+}
+
+.account-page .account-address-form {
+  margin: 0 0 22px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.account-page .account-address-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.account-page .account-address-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.account-page .account-address-form label > span {
+  color: #bdbdbd;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.account-page .account-address-form input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #fff;
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.account-page .account-address-form input:focus {
+  border-color: rgba(212, 175, 55, 0.7);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+.account-page .account-address-form input::placeholder {
+  color: #777;
+}
+
+.account-page .account-address-form-wide {
+  grid-column: 1 / -1;
+}
+
+.account-page .account-address-default-toggle {
+  flex-direction: row !important;
+  align-items: center;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.account-page .account-address-default-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: #d4af37;
+}
+
+.account-page .account-address-default-toggle span {
+  color: #d0d0d0 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.account-page .account-address-form-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 107, 107, 0.25);
+  border-radius: 9px;
+  background: rgba(255, 107, 107, 0.07);
+  color: #ff9b9b;
+  font-size: 12px;
+}
+
+.account-page .account-address-save-button {
+  margin-top: 15px;
+  background: linear-gradient(
+    135deg,
+    #d4af37,
+    #b88a16
+  );
+  color: #111;
+  border-color: #d4af37;
+}
+
+.account-page .account-address-save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 649px) {
+  .account-page .account-address-heading-actions {
+    gap: 7px;
+  }
+
+  .account-page .account-address-add-button {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .account-page .account-address-form {
+    padding: 14px;
+  }
+
+  .account-page .account-address-form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .account-page .account-address-form-wide {
+    grid-column: auto;
+  }
+}
+
+/* =========================================================
+   MERXIOM ACCOUNT — SEPARATE ADDRESS SECTION
+   ========================================================= */
+
+.account-page .account-addresses {
+  margin-top: 32px !important;
+  padding: 24px !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.025) !important;
+}
+
+.account-page .account-addresses-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.account-page .account-addresses-heading h2 {
+  margin: 4px 0 0;
+}
+
+.account-page .account-address-count {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.12);
+  color: #f1d77a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.account-page .account-addresses-list {
+  display: grid;
+  gap: 12px;
+}
+
+.account-page .account-address {
+  padding: 17px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.account-page .account-address-default {
+  border-color: rgba(212, 175, 55, 0.28);
+}
+
+.account-page .account-address-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.account-page .account-address-top > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-page .account-address-default-badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.14);
+  color: #f1d77a;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.account-page .account-address-details {
+  display: grid;
+  gap: 5px;
+  color: #bdbdbd;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.account-page .account-address-details strong {
+  color: #fff;
+}
+
+@media (max-width: 649px) {
+  .account-page .account-addresses {
+    margin-top: 24px !important;
+    padding: 17px !important;
+    border-radius: 15px !important;
+  }
+
+  .account-page .account-addresses-heading {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .account-page .account-address-heading-actions {
+    flex-shrink: 0;
+  }
+
+  .account-page .account-address {
+    padding: 14px;
+  }
+}

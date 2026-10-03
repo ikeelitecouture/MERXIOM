@@ -9,8 +9,8 @@ if ("serviceWorker" in navigator) {
 }
 
 // Installed MERXIOM app:
-// If the user launches the installed app without a valid
-// local session, send them to authentication first.
+// A fresh launch of the installed app without a valid local session
+// starts at authentication instead of the marketplace.
 (() => {
   const standalone =
     window.matchMedia("(display-mode: standalone)").matches ||
@@ -18,7 +18,7 @@ if ("serviceWorker" in navigator) {
 
   const token = localStorage.getItem("merxiom_token");
 
-  const publicAuthPaths = [
+  const authPaths = [
     "/login",
     "/register",
     "/forgot-password",
@@ -28,8 +28,7 @@ if ("serviceWorker" in navigator) {
   if (
     standalone &&
     !token &&
-    window.location.pathname === "/" &&
-    !publicAuthPaths.includes(window.location.pathname)
+    !authPaths.includes(window.location.pathname)
   ) {
     window.history.replaceState({}, "", "/login");
   }

@@ -31,6 +31,32 @@ const productSchema = new mongoose.Schema(
       trim: true
     },
 
+    brand: {
+      type: String,
+      default: "",
+      trim: true
+    },
+
+    colors: [
+      {
+        type: String,
+        trim: true
+      }
+    ],
+
+    sizes: [
+      {
+        type: String,
+        trim: true
+      }
+    ],
+
+    location: {
+      type: String,
+      default: "",
+      trim: true
+    },
+
     images: [
       {
         type: String

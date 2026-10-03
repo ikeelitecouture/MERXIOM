@@ -35,7 +35,50 @@ const userSchema = new mongoose.Schema(
     passwordResetExpires: {
       type: Date,
       default: null
-    }
+    },
+
+    addresses: [
+      {
+        label: {
+          type: String,
+          default: "Home",
+          trim: true
+        },
+        fullName: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        phone: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        address: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        city: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        state: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        addressCode: {
+          type: Number,
+          default: null
+        },
+        isDefault: {
+          type: Boolean,
+          default: false
+        }
+      }
+    ]
   },
   {
     timestamps: true

@@ -1,5 +1,73 @@
 const { getConfiguredProviders } = require("./aiProviders");
 
+async function callGeminiVision({
+  message,
+  context = {},
+  imageBuffer,
+  mimeType = "image/jpeg",
+}) {
+  const { GoogleGenAI } = require("@google/genai");
+
+  const ai = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY,
+  });
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3.8-flash",
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            inlineData: {
+              mimeType,
+              data: imageBuffer.toString("base64"),
+            },
+          },
+          {
+            text: `
+USER REQUEST:
+${message || "Please describe or identify what is shown in this image."}
+
+MERXIOM CONTEXT:
+${JSON.stringify(context, null, 2)}
+`,
+          },
+        ],
+      },
+    ],
+    config: {
+      systemInstruction: `
+You are MERXIOM AI with image understanding.
+
+Analyze the supplied image carefully and answer the user's request naturally.
+
+You can identify products, clothing, shoes, electronics, objects,
+visual details, styles, colours and other useful information visible
+in the image.
+
+IMPORTANT:
+- Never invent MERXIOM-specific products, prices, stock, orders,
+  delivery status, customer information or seller information.
+- For MERXIOM-specific facts, use only the supplied MERXIOM context.
+- If something cannot be determined reliably from the image, say so.
+- Understand Nigerian English, slang, abbreviations and casual wording.
+`,
+      thinkingConfig: {
+        thinkingLevel: "low",
+      },
+      maxOutputTokens: 1200,
+    },
+  });
+
+  return {
+    answer:
+      response.text ||
+      "I couldn't understand the image clearly.",
+    quota: null,
+  };
+}
+
 async function callGemini({ message, context = {} }) {
   const { GoogleGenAI } = require("@google/genai");
 
@@ -57,6 +125,105 @@ If the user uses Nigerian slang or shorthand, interpret it naturally.
   });
 
   return response.text || "I couldn't generate a response.";
+}
+
+async function callGroqVision({
+  message,
+  context = {},
+  imageBuffer,
+  mimeType = "image/jpeg",
+}) {
+  const base64Image = imageBuffer.toString("base64");
+
+  const response = await fetch(
+    "https://api.groq.com/openai/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "qwen/qwen3.8-27b",
+        messages: [
+          {
+            role: "system",
+            content: `
+You are MERXIOM AI with image understanding.
+
+Analyze the supplied image carefully and answer the user's request naturally.
+
+You can identify products, clothing, shoes, electronics, objects,
+visual details, styles, colours and other useful information visible
+in the image.
+
+Never invent MERXIOM-specific:
+- products
+- prices
+- stock
+- orders
+- delivery status
+- customer information
+- seller information
+
+Use only the supplied MERXIOM context for MERXIOM-specific facts.
+
+Understand Nigerian English, slang, abbreviations, shortcuts and casual expressions.
+`,
+          },
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `USER REQUEST:
+${message || "Please describe or identify what is shown in this image."}
+
+MERXIOM CONTEXT:
+${JSON.stringify(context, null, 2)}`,
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:${mimeType};base64,${base64Image}`,
+                },
+              },
+            ],
+          },
+        ],
+        max_completion_tokens: 1200,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    const error = new Error(
+      `Groq Vision request failed: ${errorText || response.statusText}`
+    );
+    error.status = response.status;
+    throw error;
+  }
+
+  const data = await response.json();
+
+  const content = data?.choices?.[0]?.message?.content;
+
+  if (!content) {
+    throw new Error("Groq Vision returned an empty response");
+  }
+
+  return {
+    answer: String(content).trim(),
+    quota: {
+      remainingRequests:
+        response.headers.get("x-ratelimit-remaining-requests") || null,
+      remainingTokens:
+        response.headers.get("x-ratelimit-remaining-tokens") || null,
+      resetRequests:
+        response.headers.get("x-ratelimit-reset-requests") || null,
+    },
+  };
 }
 
 async function callGroq({ message, context = {} }) {
@@ -335,6 +502,62 @@ function shouldFallback(error) {
   );
 }
 
+async function routeVisionAI(payload) {
+  const providers = getConfiguredProviders().filter((provider) =>
+    ["gemini", "groq"].includes(provider.id)
+  );
+
+  if (!providers.length) {
+    throw new Error("No configured MERXIOM Vision provider is available");
+  }
+
+  const failures = [];
+
+  for (const provider of providers) {
+    try {
+      let result;
+
+      if (provider.id === "gemini") {
+        result = await callGeminiVision(payload);
+      } else if (provider.id === "groq") {
+        result = await callGroqVision(payload);
+      } else {
+        continue;
+      }
+
+      return {
+        answer: result.answer || result,
+        provider: provider.id,
+        providerName: provider.name,
+        quota: result.quota || null,
+        failures,
+      };
+    } catch (error) {
+      console.error(
+        `MERXIOM Vision provider failed: ${provider.name}`,
+        error.message
+      );
+
+      failures.push({
+        provider: provider.id,
+        status: error?.status || null,
+        message: error.message,
+      });
+
+      if (!shouldFallback(error)) {
+        throw error;
+      }
+    }
+  }
+
+  const error = new Error(
+    "All configured MERXIOM Vision providers failed"
+  );
+
+  error.failures = failures;
+  throw error;
+}
+
 async function routeAI(payload) {
   const providers = getConfiguredProviders();
 
@@ -381,4 +604,7 @@ async function routeAI(payload) {
 module.exports = {
   callProvider,
   routeAI,
+  routeVisionAI,
+  callGeminiVision,
+  callGroqVision,
 };

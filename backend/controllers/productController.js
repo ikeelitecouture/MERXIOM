@@ -9,6 +9,10 @@ const createProduct = async (req, res) => {
       description,
       price,
       category,
+      brand,
+      colors,
+      sizes,
+      location,
       stock,
       images,
       shipping
@@ -43,6 +47,18 @@ const createProduct = async (req, res) => {
       description: description || "",
       price,
       category,
+      brand: brand || "",
+      colors: Array.isArray(colors)
+        ? colors
+        : (typeof colors === "string" && colors.trim()
+            ? colors.split(",").map((item) => item.trim()).filter(Boolean)
+            : []),
+      sizes: Array.isArray(sizes)
+        ? sizes
+        : (typeof sizes === "string" && sizes.trim()
+            ? sizes.split(",").map((item) => item.trim()).filter(Boolean)
+            : []),
+      location: location || "",
       stock: stock || 0,
       images: uploadedImages,
       status: req.body.status || "active",
@@ -71,7 +87,7 @@ const createProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find({ status: "active" })
-      .populate("business", "name slug logo")
+      .populate({ path: "business", select: "name slug logo owner", populate: { path: "owner", select: "name email role" } })
       .sort({ createdAt: -1 });
 
     res.json({
@@ -148,6 +164,10 @@ const updateProduct = async (req, res) => {
       "description",
       "price",
       "category",
+      "brand",
+      "colors",
+      "sizes",
+      "location",
       "stock",
       "images",
       "status",

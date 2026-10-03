@@ -73,8 +73,42 @@ const createConversation = async (req, res) => {
   }
 };
 
+
+const deleteConversation = async (req, res) => {
+  try {
+    const conversation = await MERXIOMConversation.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.userId,
+    });
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: "Conversation not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Conversation deleted",
+      conversationId: conversation._id,
+    });
+  } catch (error) {
+    console.error(
+      "MERXIOM delete conversation error:",
+      error.message
+    );
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to delete conversation",
+    });
+  }
+};
+
 module.exports = {
   getMyConversations,
   getConversation,
   createConversation,
+  deleteConversation,
 };

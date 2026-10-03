@@ -12,6 +12,7 @@ const paymentRoutes = require("./routes/payment");
 const obanaRoutes = require("./routes/obana");
 const aiRoutes = require("./routes/ai");
 const aiConversationRoutes = require("./routes/aiConversations");
+const chatRoutes = require("./routes/chat");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -32,6 +33,7 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/obana", obanaRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/ai/conversations", aiConversationRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.get("/", (req, res) => {
   res.json({

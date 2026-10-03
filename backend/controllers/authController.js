@@ -113,7 +113,221 @@ const login = async (req, res) => {
   }
 };
 
+
+
+const getAddresses = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("addresses");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    res.json({
+      success: true,
+      addresses: user.addresses || []
+    });
+  } catch (error) {
+    console.error("Get addresses error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to load saved addresses"
+    });
+  }
+};
+
+const addAddress = async (req, res) => {
+  try {
+    const {
+      label,
+      fullName,
+      phone,
+      address,
+      city,
+      state,
+      addressCode,
+      isDefault
+    } = req.body;
+
+    if (!fullName || !phone || !address || !city || !state) {
+      return res.status(400).json({
+        success: false,
+        message: "Full name, phone, address, city and state are required"
+      });
+    }
+
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const shouldBeDefault =
+      Boolean(isDefault) || user.addresses.length === 0;
+
+    if (shouldBeDefault) {
+      user.addresses.forEach((item) => {
+        item.isDefault = false;
+      });
+    }
+
+    user.addresses.push({
+      label: label || "Home",
+      fullName,
+      phone,
+      address,
+      city,
+      state,
+      addressCode: addressCode || null,
+      isDefault: shouldBeDefault
+    });
+
+    await user.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Address saved successfully",
+      address: user.addresses[user.addresses.length - 1]
+    });
+  } catch (error) {
+    console.error("Add address error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to save address"
+    });
+  }
+};
+
+const updateAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const savedAddress = user.addresses.id(req.params.id);
+
+    if (!savedAddress) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found"
+      });
+    }
+
+    const {
+      label,
+      fullName,
+      phone,
+      address,
+      city,
+      state,
+      addressCode,
+      isDefault
+    } = req.body;
+
+    if (!fullName || !phone || !address || !city || !state) {
+      return res.status(400).json({
+        success: false,
+        message: "Full name, phone, address, city and state are required"
+      });
+    }
+
+    if (Boolean(isDefault)) {
+      user.addresses.forEach((item) => {
+        item.isDefault = false;
+      });
+    }
+
+    savedAddress.label = label || "Home";
+    savedAddress.fullName = fullName;
+    savedAddress.phone = phone;
+    savedAddress.address = address;
+    savedAddress.city = city;
+    savedAddress.state = state;
+    savedAddress.addressCode = addressCode || null;
+
+    if (Boolean(isDefault)) {
+      savedAddress.isDefault = true;
+    }
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Address updated successfully",
+      address: savedAddress
+    });
+  } catch (error) {
+    console.error("Update address error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to update address"
+    });
+  }
+};
+
+const deleteAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const savedAddress = user.addresses.id(req.params.id);
+
+    if (!savedAddress) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found"
+      });
+    }
+
+    const wasDefault = savedAddress.isDefault;
+
+    savedAddress.deleteOne();
+
+    if (wasDefault && user.addresses.length > 0) {
+      user.addresses[0].isDefault = true;
+    }
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Address deleted successfully"
+    });
+  } catch (error) {
+    console.error("Delete address error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to delete address"
+    });
+  }
+};
+
 module.exports = {
   register,
-  login
+  login,
+  getAddresses,
+  addAddress,
+  updateAddress,
+  deleteAddress
 };
