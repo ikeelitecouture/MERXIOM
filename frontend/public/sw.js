@@ -1,83 +1,64 @@
-const CACHE_NAME = "merxiom-shell-v1";
-
-const APP_SHELL = [
-  "/",
-  "/manifest.webmanifest",
-  "/merxiom-icon-192.png",
-  "/merxiom-icon-512.png"
+const CACHE = 'merxiom-shell-v1';
+const SHELL = [
+  '/',
+  '/index.html',
+  '/merxiom-logo.png',
+  '/merxiom-icon.svg',
+  '/manifest.webmanifest'
 ];
 
-self.addEventListener("install", (event) => {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
+    caches.open(CACHE)
+      .then(cache => cache.addAll(SHELL))
+      .then(() => self.skipWaiting())
   );
-
-  self.skipWaiting();
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
-      )
-    )
+    caches.keys()
+      .then(keys => Promise.all(
+        keys.filter(key => key !== CACHE).map(key => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
   );
-
-  self.clients.claim();
 });
 
-self.addEventListener("fetch", (event) => {
+self.addEventListener('fetch', event => {
   const request = event.request;
-
-  if (request.method !== "GET") return;
-
   const url = new URL(request.url);
 
-  // Never cache MERXIOM API requests.
-  if (url.pathname.startsWith("/api/")) return;
+  if (request.method !== 'GET' || url.origin !== self.location.origin) return;
 
-  // Navigation: network first, cached app shell fallback.
-  if (request.mode === "navigate") {
+  // Never cache API responses, authentication or checkout requests.
+  if (url.pathname.startsWith('/api/')) return;
+
+  if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put("/", copy);
-          });
-
+        .then(response => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE).then(cache => cache.put('/index.html', copy));
+          }
           return response;
         })
-        .catch(() => caches.match("/"))
+        .catch(() => caches.match('/index.html'))
     );
-
     return;
   }
 
-  // Static assets: cache first.
   event.respondWith(
-    caches.match(request).then((cached) => {
-      return (
-        cached ||
-        fetch(request).then((response) => {
-          if (
-            response.ok &&
-            url.origin === self.location.origin
-          ) {
-            const copy = response.clone();
-
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, copy);
-            });
-          }
-
-          return response;
-        })
-      );
+    caches.match(request).then(cached => {
+      if (cached) return cached;
+      return fetch(request).then(response => {
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE).then(cache => cache.put(request, copy));
+        }
+        return response;
+      });
     })
   );
 });

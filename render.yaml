@@ -1,0 +1,82 @@
+services:
+  - type: web
+    name: merxiom-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: OWNER_EMAIL
+        sync: false
+      - key: WEB_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_SECURE
+        value: "false"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: OBANA_STORE_KEY
+        sync: false
+      - key: OBANA_WEBHOOK_SECRET
+        sync: false
+      - key: OBANA_PICKUP_NAME
+        sync: false
+      - key: OBANA_PICKUP_PHONE
+        sync: false
+      - key: OBANA_PICKUP_LINE1
+        sync: false
+      - key: OBANA_PICKUP_CITY
+        sync: false
+      - key: OBANA_PICKUP_STATE
+        sync: false
+      - key: CHOWDECK_RELAY_API_BASE_URL
+        sync: false
+      - key: CHOWDECK_RELAY_API_KEY
+        sync: false
+      - key: GOKADA_API_BASE_URL
+        sync: false
+      - key: GOKADA_API_KEY
+        sync: false
+      - key: FEZ_API_BASE_URL
+        sync: false
+      - key: FEZ_API_KEY
+        sync: false
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_MODEL
+        value: gpt-4o-mini
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+  - type: web
+    name: merxiom-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false

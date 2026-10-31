@@ -1,0 +1,29 @@
+const express=require('express');const {Product,Category,User}=require('../models');const {auth,requireVerified,requireRole}=require('../middleware/auth');const router=express.Router();
+const slugify=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,150);
+router.get('/categories',async(req,res,next)=>{try{const categories=await Category.find({active:true}).sort({sortOrder:1,name:1}).lean();res.json({categories});}catch(e){next(e)}});
+router.get('/',async(req,res,next)=>{try{const {q,category,popular,sort='newest',minPrice,maxPrice,page=1,limit=24}=req.query;const filter={status:'active',stock:{$gt:0}};if(category){const categoryKey=String(category).trim();const categoryMatch=[{slug:categoryKey.toLowerCase()},{name:{$regex:'^'+categoryKey.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$',$options:'i'}}];if(/^[a-f\d]{24}$/i.test(categoryKey))categoryMatch.push({_id:categoryKey});const c=await Category.findOne({$or:categoryMatch});if(c)filter.category=c._id;else return res.json({products:[],pagination:{page:Number(page),pages:0,total:0}});}if(q?.trim())filter.$text={$search:String(q).trim()};if(popular==='true')filter.isPopular=true;if(minPrice!==undefined||maxPrice!==undefined)filter.price={...(minPrice!==undefined?{$gte:Math.max(0,Number(minPrice)||0)}:{}),...(maxPrice!==undefined?{$lte:Math.max(0,Number(maxPrice)||0)}:{})};const sortMap={newest:{createdAt:-1},price_asc:{price:1},price_desc:{price:-1},popular:{isPopular:-1,createdAt:-1}};const p=Math.max(1,Number(page)||1),l=Math.min(60,Math.max(1,Number(limit)||24));const [products,total]=await Promise.all([Product.find(filter).populate('category','name slug').populate('seller','name store').sort(sortMap[sort]||sortMap.newest).skip((p-1)*l).limit(l).lean(),Product.countDocuments(filter)]);res.json({products,pagination:{page:p,limit:l,total,pages:Math.ceil(total/l)}});}catch(e){next(e)}});
+router.get('/mine',auth,requireVerified,requireRole('seller','admin'),async(req,res,next)=>{try{const products=await Product.find(req.user.role==='admin'?{}:{seller:req.user._id}).populate('category','name slug attributes').sort({createdAt:-1}).limit(300).lean();res.json({products});}catch(e){next(e)}});
+router.get('/:idOrSlug',async(req,res,next)=>{try{const key=req.params.idOrSlug;const product=await Product.findOne({$or:[{slug:key},...( /^[a-f\d]{24}$/i.test(key)?[{_id:key}]:[] )],status:'active'}).populate('category','name slug attributes').populate('seller','name store').lean();if(!product)return res.status(404).json({error:'Product not found.'});res.json({product});}catch(e){next(e)}});
+router.post('/',auth,requireVerified,requireRole('seller','admin'),async(req,res,next)=>{try{const b=req.body||{};if(!b.name?.trim()||!b.description?.trim()||!b.category||!Number.isFinite(Number(b.price))||Number(b.price)<0||!Number.isFinite(Number(b.stock))||Number(b.stock)<0)return res.status(400).json({error:'Name, description, category, valid price and stock are required.'});const category=await resolveCategory(b.category);if(!category)return res.status(400).json({error:'Select a valid active category using its ID, name or slug.'});const seller=await User.findById(req.user._id);const isOwnerStore=Boolean(process.env.OWNER_EMAIL&&seller.email===process.env.OWNER_EMAIL.toLowerCase());const storeName=seller.store?.name||(isOwnerStore?'MERXIOM Store':`${seller.name}'s Store`);const slug=`${slugify(b.name)}-${Date.now().toString(36)}`;const product=await Product.create({seller:seller._id,storeName,isOwnerStore,name:b.name.trim(),slug,description:b.description.trim(),category:category._id,price:Number(b.price),compareAtPrice:b.compareAtPrice?Number(b.compareAtPrice):undefined,images:Array.isArray(b.images)?b.images.filter(i=>i?.url).slice(0,8):[],stock:Number(b.stock),sku:b.sku||undefined,status:b.status==='draft'?'draft':'active',attributes:b.attributes||{},variants:Array.isArray(b.variants)?b.variants:[],weightKg:Number(b.weightKg)||0.5});res.status(201).json({product});}catch(e){next(e)}});
+router.patch('/:id',auth,requireVerified,async(req,res,next)=>{try{const product=await Product.findById(req.params.id);if(!product)return res.status(404).json({error:'Product not found.'});if(req.user.role!=='admin'&&String(product.seller)!==String(req.user._id))return res.status(403).json({error:'You cannot edit this product.'});const allowed=['name','description','price','compareAtPrice','images','stock','sku','status','attributes','variants','weightKg'];for(const k of allowed)if(req.body[k]!==undefined)product[k]=req.body[k];if(req.body.category){const category=await resolveCategory(req.body.category);if(!category)return res.status(400).json({error:'Invalid or inactive category.'});product.category=category._id;}if(req.user.role!=='admin'&&req.body.isPopular!==undefined)return res.status(403).json({error:'Only administrators can feature products.'});await product.save();res.json({product});}catch(e){next(e)}});
+router.delete('/:id',auth,requireVerified,async(req,res,next)=>{try{const product=await Product.findById(req.params.id);if(!product)return res.status(404).json({error:'Product not found.'});if(req.user.role!=='admin'&&String(product.seller)!==String(req.user._id))return res.status(403).json({error:'You cannot delete this product.'});product.status='archived';await product.save();res.json({message:'Product archived.'});}catch(e){next(e)}});
+
+async function resolveCategory(value) {
+  const key = String(value ?? '').trim();
+  if (!key) return null;
+
+  const matches = [
+    { slug: key.toLowerCase() },
+    { name: { $regex: '^' + escapeRegex(key) + '$', $options: 'i' } }
+  ];
+
+  if (/^[a-f\d]{24}$/i.test(key)) matches.push({ _id: key });
+
+  return Category.findOne({ active: true, $or: matches });
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+module.exports=router;

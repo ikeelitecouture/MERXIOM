@@ -1,0 +1,82 @@
+const BASE = () => String(process.env.FEZ_API_BASE_URL || 'https://api.fezdelivery.co/v1').trim().replace(/\/+$/, '').replace(/\/(?:v1)?$/, '') + '/v1';
+let authCache = { token: '', secret: '', expiresAt: 0 };
+
+function enabled() {
+  return Boolean(process.env.FEZ_USER_ID && process.env.FEZ_PASSWORD);
+}
+async function authenticate() {
+  if (authCache.token && authCache.expiresAt > Date.now() + 60000) return authCache;
+  if (!process.env.FEZ_USER_ID || !process.env.FEZ_PASSWORD) {
+    throw new Error('Fez credentials are incomplete. Add FEZ_USER_ID and FEZ_PASSWORD to backend/.env.');
+  }
+  const response = await fetch(`${BASE()}/user/authenticate`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ user_id: process.env.FEZ_USER_ID, password: process.env.FEZ_PASSWORD }),
+    signal: AbortSignal.timeout(20000)
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok || String(body.status || '').toLowerCase() !== 'success') {
+    throw new Error(body.description || `Fez authentication failed (HTTP ${response.status}).`);
+  }
+  const auth = body.authDetails || {};
+  const secret = process.env.FEZ_SECRET_KEY || body.orgDetails?.['secret-key'] || process.env.FEZ_API_KEY;
+  if (!auth.authToken || !secret) throw new Error('Fez authentication did not return the required token/secret-key.');
+  const expiry = auth.expireToken ? new Date(auth.expireToken).getTime() : Date.now() + 50 * 60 * 1000;
+  authCache = { token: auth.authToken, secret, expiresAt: Number.isFinite(expiry) ? expiry : Date.now() + 50 * 60 * 1000 };
+  return authCache;
+}
+async function request(path, method = 'GET', payload) {
+  const auth = await authenticate();
+  const response = await fetch(`${BASE()}${path}`, {
+    method,
+    headers: { Authorization: `Bearer ${auth.token}`, 'secret-key': auth.secret, 'Content-Type': 'application/json', Accept: 'application/json' },
+    ...(payload === undefined ? {} : { body: JSON.stringify(payload) }),
+    signal: AbortSignal.timeout(25000)
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.description || body.message || `Fez API returned HTTP ${response.status}.`);
+  if (body.status && !['success', 'ok'].includes(String(body.status).toLowerCase())) throw new Error(body.description || body.message || 'Fez rejected the request.');
+  return body;
+}
+async function quote({ destinationState, pickupState, weightKg }) {
+  const body = await request('/order/cost', 'POST', { state: destinationState, pickUpState: pickupState, weight: Math.max(1, Math.ceil(Number(weightKg) || 1)) });
+  const data = body.data || body;
+  const cost = Number(data.cost?.cost ?? data.cost ?? data.deliveryCost ?? data.delivery_cost);
+  const vat = Number(data.vat?.vatAmount ?? data.vatAmount ?? data.vat_amount ?? 0);
+  const total = Number(data.totalCost ?? data.total_cost ?? (cost + vat));
+  if (!Number.isFinite(total) || total < 0) throw new Error('Fez returned an invalid delivery price.');
+  return { price: total, currency: 'NGN', raw: data };
+}
+async function book({ orderNumber, seller, destination, itemValue, weightKg, description }) {
+  const pickup = seller.store?.pickupAddress || {};
+  const requestId = `${orderNumber}-${String(seller._id).slice(-6)}`;
+  const payload = [{
+    recipientAddress: [destination.line1, destination.line2, destination.city, destination.state].filter(Boolean).join(', '),
+    recipientState: destination.state,
+    recipientName: destination.recipient,
+    recipientPhone: destination.phone,
+    uniqueID: requestId,
+    BatchID: orderNumber,
+    valueOfItem: Number(itemValue),
+    weight: Math.max(1, Math.ceil(Number(weightKg) || 1)),
+    pickUpState: pickup.state,
+    pickUpAddress: [pickup.line1, pickup.city, pickup.state].filter(Boolean).join(', '),
+    thirdparty: 'true',
+    senderName: pickup.contactName || seller.name || seller.store?.name || 'Seller',
+    senderAddress: [pickup.line1, pickup.city, pickup.state].filter(Boolean).join(', '),
+    senderPhone: pickup.phone,
+    itemDescription: String(description || 'MERXIOM order').slice(0, 250)
+  }];
+  const response = await request('/order', 'POST', payload);
+  const data = response.data || response;
+  const orders = data.orderNos || data.orderNo || data.orders || {};
+  const reference = typeof orders === 'string' ? orders : orders[requestId] || Object.values(orders)[0];
+  if (!reference) throw new Error('Fez accepted the request but did not return an order number.');
+  return { reference: String(reference), status: data.status || 'booked', raw: data };
+}
+async function track(reference) {
+  const response = await request(`/order/track/${encodeURIComponent(reference)}`, 'GET');
+  const data = response.data || response.order || response;
+  return { status: data.orderStatus || data.status || 'unknown', history: data.history || [], raw: data };
+}
+module.exports = { enabled, authenticate, quote, book, track, _resetAuthCache: () => { authCache = { token: '', secret: '', expiresAt: 0 }; } };

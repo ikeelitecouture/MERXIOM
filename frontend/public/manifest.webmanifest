@@ -1,25 +1,19 @@
 {
-  "name": "MERXIOM",
+  "id": "/",
+  "name": "MERXIOM — Marketplace",
   "short_name": "MERXIOM",
-  "description": "Where commerce meets intelligent thinking.",
-  "start_url": "/?source=pwa",
+  "description": "Discover products, shop trusted sellers and grow your business.",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
+  "background_color": "#0c1e3e",
+  "theme_color": "#0c1e3e",
   "icons": [
     {
-      "src": "/merxiom-icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/merxiom-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "/merxiom-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ]
