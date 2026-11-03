@@ -50,8 +50,8 @@ const orderSchema = new Schema({
   status: { type: String, enum: ['pending_payment','paid','processing','shipped','delivered','cancelled','refunded'], default: 'pending_payment', index: true },
   paymentStatus: { type: String, enum: ['unpaid','pending','paid','failed','refunded'], default: 'unpaid', index: true },
   paymentReference: String, paystackAccessCode: String,
-  shipment: { provider: String, reference: String, trackingUrl: String, status: String, carrier: String, shippingFee: Number, quoteOptionId: String, lastUpdatedAt: Date },
-  shipments: [{ seller: { type: Schema.Types.ObjectId, ref: 'User' }, provider: String, reference: String, status: String, carrier: String, shippingFee: Number, weightKg: Number, trackingUrl: String, lastUpdatedAt: Date }],
+  shipment: { provider: String, reference: String, providerReference: String, trackingCode: String, trackingUrl: String, status: String, carrier: String, shippingFee: Number, quoteOptionId: String, lastUpdatedAt: Date },
+  shipments: [{ seller: { type: Schema.Types.ObjectId, ref: 'User' }, provider: String, reference: String, providerReference: String, trackingCode: String, quoteData: Schema.Types.Mixed, status: String, carrier: String, shippingFee: Number, weightKg: Number, trackingUrl: String, lastUpdatedAt: Date }],
   createdAtPaid: Date
 }, opts);
 

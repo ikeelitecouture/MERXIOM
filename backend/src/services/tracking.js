@@ -15,6 +15,7 @@ function normalizeStatus(value) {
     out_for_delivery: "out_for_delivery",
     delivered: "delivered",
     cancelled: "cancelled",
+    canceled: "cancelled",
     failed: "failed",
     returned: "returned"
   };
@@ -31,7 +32,8 @@ async function saveTrackingEvent(data) {
     description,
     location,
     eventTime,
-    rawEvent
+    rawEvent,
+    provider
   } = data;
 
   const normalized = normalizeStatus(status);
@@ -47,6 +49,7 @@ async function saveTrackingEvent(data) {
     : crypto.createHash("sha256").update(JSON.stringify({
         orderId: String(orderId),
         shipmentId: String(shipmentId),
+        provider: provider || "unknown",
         status: normalized,
         description: description || "",
         location: location || "",
@@ -57,7 +60,7 @@ async function saveTrackingEvent(data) {
     const event = await ShipmentEvent.create({
       orderId,
       shipmentId,
-      provider: "fez",
+      provider: provider || "unknown",
       eventId: stableEventId,
       status: normalized,
       description: description || "",

@@ -1,4 +1,4 @@
-const CACHE = 'merxiom-shell-v1';
+const CACHE = 'merxiom-shell-v2';
 const SHELL = [
   '/',
   '/index.html',

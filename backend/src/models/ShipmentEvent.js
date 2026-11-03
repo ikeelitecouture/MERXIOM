@@ -14,7 +14,7 @@ const ShipmentEventSchema = new mongoose.Schema({
   },
   provider: {
     type: String,
-    default: "fez",
+    default: "unknown",
     required: true
   },
   eventId: {
